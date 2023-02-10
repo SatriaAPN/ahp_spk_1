@@ -344,6 +344,36 @@ app.get('/kandidat-belum-dinilai/daftar-intensitas-kriteria/:idKandidat', async 
   }
 });
 
+app.post('/kandidat-belum-dinilai/nilai-kandidat/:idKandidat', async (req, res) => {
+  try {
+    const { idKandidat } = req.params;
+    const { dataDataPenilaian } = req.body;
+
+    for(let dataPenilaian of dataDataPenilaian) {
+      const { idKriteria, idIntensitas } = dataPenilaian;
+
+      const dataNilaiKandidat = await nilaiKandidat.create({
+        id_kandidat: idKandidat,
+        id_kriteria_ahp: idKriteria,
+        id_intensitas_kriteria_ahp: idIntensitas
+      });
+
+      if(!dataNilaiKandidat) {
+        throw new Error('Gagal menambahkan nilai kandidat');
+      }
+    }
+
+    res.status(200).send({
+      message: 'Berhasil menambahkan nilai kandidat'
+    });
+  } catch(e) {
+    console.log(e)
+    res.status(400).send({
+      message: e.message
+    });
+  }
+});
+
 /**
  * Human Resource
  */

@@ -17,7 +17,7 @@ const seeder = async (model) => {
   
     await createSesiRekrutmen(model);
   } catch(e) {
-    throw new Error(e);
+    throw new e;
   }
 }
 
@@ -2060,18 +2060,6 @@ const createSesiRekrutmen = async (model) => {
 
     await createNilaiKandidat(kandidat1.id, model);
 
-    let nilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(kandidat1.id);
-
-    // update data kandidat
-    model.kandidat.update({
-      rataRataNilaiIdealKandidat: nilaiKandidat.rataRataNilaiIdealKandidat,
-      totalNilaiNormalkandidat: nilaiKandidat.totalNilaiNormalkandidat
-    }, {
-      where: {
-        id: kandidat1.id
-      }
-    });
-
     const kandidat2 = await model.kandidat.create({
       nama: 'Kandidat 2',
       email: 'Kandidat2@mail.com',
@@ -2314,6 +2302,18 @@ const createNilaiKandidat = async (idKandidat, model) => {
     await model.nilaiKandidat.create({
       id_kandidat: idKandidat,
       id_intensitas_kriteria_ahp: getRndInteger(41,44)
+    });
+
+    let nilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(idKandidat);
+
+    // update data kandidat
+    model.kandidat.update({
+      rata_rata_nilai_ideal: nilaiKandidat.rataRataNilaiIdealKandidat,
+      total_nilai_normal: nilaiKandidat.totalNilaiNormalkandidat
+    }, {
+      where: {
+        id: idKandidat
+      }
     });
   } catch(e) {
     throw e;

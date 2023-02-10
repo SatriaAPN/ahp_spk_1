@@ -2150,6 +2150,15 @@ const createSesiRekrutmen = async (model) => {
 
     await createNilaiKandidat(kandidat10.id, model);
 
+    // update status sesi rekrutmen
+    await model.sesiRekrutmen.update({
+      status: 'selesai'
+    }, {
+      where: {
+        id: sesiRekrutmen.id
+      }
+    });
+
     const sesiRekrutmen2 = await model.sesiRekrutmen.create({
       nama: 'Sesi Rekrutmen 2',
     });

@@ -1524,6 +1524,29 @@ app.get('/sesi-seleksi-programmer', async (req, res, next) => {
   }
 })
 
+app.post('/sesi-seleksi-programmer', async (req, res, next) => {
+  try {
+    const namaSesi = req.body.namaSesi;
+
+    if(!namaSesi) {
+      throw new Error('Nama sesi harus diisi');
+    }
+
+    await sesiRekrutmen.create({
+      nama: namaSesi
+    });
+
+    res.status(200).send({
+      message: 'Berhasil menambahkan sesi perekrutan'
+    });
+  } catch(e) {
+    console.log(e)
+    res.status(400).send({
+      message: e.message
+    });
+  }
+});
+
 app.get('/sesi-seleksi-programmer/:id', async (req, res, next) => {
   try {
     const idSesi = req.params.id;

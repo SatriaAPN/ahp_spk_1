@@ -1585,6 +1585,83 @@ app.get('/sesi-seleksi-programmer/:id', async (req, res, next) => {
   }
 })
 
+app.post('/sesi-seleksi-programmer/kandidat', async (req, res, next) => {
+  try {
+    const {
+      idSesi,
+      namaKandidat,
+      emailKandidat,
+      noHpKandidat,
+      idSeniorProgrammer,
+    } = req.body;
+
+    if(!idSesi) {
+      throw new Error('idSesi harus diisi');
+    }
+
+    if(!namaKandidat) {
+      throw new Error('namaKandidat harus diisi');
+    }
+
+    if(!emailKandidat) {
+      throw new Error('emailKandidat harus diisi');
+    }
+
+    if(!noHpKandidat) {
+      throw new Error('noHpKandidat harus diisi');
+    }
+
+    if(!idSeniorProgrammer) {
+      throw new Error('idSeniorProgrammer harus diisi');
+    }
+
+    const dataSesiRekrutmen = await sesiRekrutmen.findOne({
+      where: {
+        id: idSesi
+      }
+    });
+
+    if(!dataSesiRekrutmen) {
+      throw new Error('Sesi rekrutmen tidak ditemukan');
+    }
+
+    if(dataSesiRekrutmen.status === 'selesai') {
+      throw new Error('Sesi rekrutmen sudah selesai');
+    }
+
+    const seniorProgrammer = await akun.findOne({
+      where: {
+        id: idSeniorProgrammer
+      }
+    });
+
+    if(!seniorProgrammer) {
+      throw new Error('Senior programmer tidak ditemukan');
+    }
+
+    await kandidat.create({
+      id_sesi_rekrutmen: idSesi,
+      nama: namaKandidat,
+      email: emailKandidat,
+      no_hp: noHpKandidat,
+      id_senior_programmer: idSeniorProgrammer
+    });
+
+    res.status(200).send({
+      message: 'Berhasil menambahkan kandidat',
+      data: {
+        kandidat
+      }
+    });
+
+  } catch(e) {
+    console.log(e)
+    res.status(400).send({
+      message: e.message
+    });
+  }
+});
+
 app.listen(port, async () => {
   try {
     await sequelize.authenticate();

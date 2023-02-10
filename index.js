@@ -193,6 +193,210 @@ app.post('/masuk', async (req, res) => {
   
 });
 
+/**
+ * Senior Programmer
+ */
+
+app.get('/kandidat-belum-dinilai/:idSeniorProgrammer', async (req, res) => {
+  try {
+    const { idSeniorProgrammer } = req.params;
+
+    const daftarKandidat = await sequelize.query(
+      `
+        select 
+          k.id,
+          k.nama,
+          k.email,
+          k.no_hp,
+          k.id_sesi_rekrutmen,
+          k.id_senior_programmer 
+        from kandidat k 
+        left join (
+          select
+            nk.id_kandidat
+          from nilai_kandidat nk
+          group by nk.id_kandidat
+        ) penilaian 
+          on penilaian.id_kandidat = k.id 
+        where k.id_senior_programmer = :idSeniorProgrammer
+          and penilaian.id_kandidat is null
+        order by k.id 
+      `,
+      { 
+        type: sequelize.QueryTypes.SELECT,
+        replacements: {
+          idSeniorProgrammer: idSeniorProgrammer
+        }
+      }
+    );
+
+    res.status(200).send({
+      message: 'Berhasil mendapatkan daftar kandidat',
+      data: {daftarKandidat}
+    });
+  } catch(e) {
+    res.status(400).send({
+      message: e.message
+    });
+  }
+});
+
+app.get('/kandidat-sudah-dinilai/:idSeniorProgrammer', async (req, res) => {
+  try {
+    const { idSeniorProgrammer } = req.params;
+
+    const daftarKandidat = await sequelize.query(
+      `
+        select 
+          k.id,
+          k.nama,
+          k.email,
+          k.no_hp,
+          k.id_sesi_rekrutmen,
+          k.id_senior_programmer 
+        from kandidat k 
+        inner join (
+          select
+            nk.id_kandidat
+          from nilai_kandidat nk
+          group by nk.id_kandidat
+        ) penilaian 
+          on penilaian.id_kandidat = k.id 
+        where k.id_senior_programmer = :idSeniorProgrammer
+        order by k.id 
+      `,
+      { 
+        type: sequelize.QueryTypes.SELECT,
+        replacements: {
+          idSeniorProgrammer: idSeniorProgrammer
+        }
+      }
+    );
+
+    res.status(200).send({
+      message: 'Berhasil mendapatkan daftar kandidat',
+      data: {daftarKandidat}
+    });
+  } catch(e) {
+    res.status(400).send({
+      message: e.message
+    });
+  }
+});
+
+/**
+ * Human Resource
+ */
+
+app.get('/pusat-kontrol-akun', async (req, res) => {
+  try {
+    const daftarAkun = await akun.findAll({
+      attributes: {
+        exclude: ['kata_sandi']
+      },
+      order: [
+        ['id', 'ASC']
+      ]
+    });
+
+    res.status(200).send({
+      message: 'Berhasil mendapatkan daftar akun',
+      data: {daftarAkun}
+    });
+  } catch(e) {
+    res.status(400).send({
+      message: e.message
+    });
+  }
+});
+
+app.post('/pusat-kontrol-akun/akun', async (req, res) => {
+  try {
+    const { nama, email, kataSandi, jabatan } = req.body;
+
+    if(!nama) {
+      throw new Error('nama tidak boleh kosong');
+    }
+
+    if(!email) {
+      throw new Error('email tidak boleh kosong');
+    }
+
+    if(!kataSandi) {
+      throw new Error('kataSandi tidak boleh kosong');
+    }
+
+    if(!jabatan) {
+      throw new Error('jabatan tidak boleh kosong');
+    }
+
+    if(jabatan !== 'Human Resource' && jabatan !== 'Senior Programmer' && jabatan !== 'Chief Executive Officer') {
+      throw new Error('jabatan tidak valid, jabatan yang valid adalah Human Resource, Senior Programmer, dan Chief Executive Officer');
+    }
+
+    const dataAkun = await akun.create({
+      nama,
+      email,
+      kata_sandi: kataSandi,
+      jabatan
+    });
+
+    delete dataAkun.dataValues["kata_sandi"];
+
+    res.status(200).send({
+      message: 'Berhasil menambahkan akun',
+      data: dataAkun
+    });
+  } catch(e) {
+    res.status(400).send({
+      message: e.message
+    });
+  }
+});
+
+app.put('/pusat-kontrol-akun/akun/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { nama, kataSandi } = req.body;
+
+    if(!nama && !kataSandi) {
+      throw new Error('nama atau kataSandi tidak boleh kosong');
+    }
+
+    const dataAkun = await akun.findOne({
+      where: {
+        id
+      }
+    });
+
+    if(!dataAkun) {
+      throw new Error('Akun tidak ditemukan');
+    }
+
+    if(nama) {
+      dataAkun.nama = nama;
+    }
+
+    if(kataSandi) {
+      dataAkun.kata_sandi = kataSandi;
+    }
+
+    await dataAkun.save();
+
+    delete dataAkun.dataValues["kata_sandi"];
+
+    res.status(200).send({
+      message: 'Berhasil mengubah akun',
+      data: dataAkun
+    });
+  } catch(e) {
+    res.status(400).send({
+      message: e.message
+    });
+  }
+});
+
 app.get('/pusat-kontrol-ahp/kriteria', async (req, res, next) => {
   try {
     const idKriteriaInduk = req.query.idKriteriaInduk? req.query.idKriteriaInduk : null;
@@ -1547,6 +1751,35 @@ app.post('/sesi-seleksi-programmer', async (req, res, next) => {
   }
 });
 
+app.delete('/sesi-seleksi-programmer/:id', async (req, res, next) => {
+  try {
+    const idSesi = req.params.id;
+
+    const dataSesiRekrutmen = await sesiRekrutmen.findOne({
+      where: {
+        id: idSesi
+      }
+    });
+
+    if(!dataSesiRekrutmen) {
+      throw new Error('Sesi rekrutmen tidak ditemukan');
+    }
+
+    // hapus sesi 
+    await dataSesiRekrutmen.destroy();
+
+
+    res.status(200).send({
+      message: 'Berhasil menghapus sesi perekrutan'
+    });
+  } catch(e) {
+    console.log(e)
+    res.status(400).send({
+      message: e.message
+    });
+  }
+});
+
 app.get('/sesi-seleksi-programmer/:id', async (req, res, next) => {
   try {
     const idSesi = req.params.id;
@@ -1654,6 +1887,33 @@ app.post('/sesi-seleksi-programmer/kandidat', async (req, res, next) => {
       }
     });
 
+  } catch(e) {
+    console.log(e)
+    res.status(400).send({
+      message: e.message
+    });
+  }
+});
+
+app.delete('/sesi-seleksi-programmer/kandidat/:id', async (req, res, next) => {
+  try {
+    const idKandidat = req.params.id;
+
+    const dataKandidat = await kandidat.findOne({
+      where: {
+        id: idKandidat
+      }
+    });
+
+    if(!dataKandidat) {
+      throw new Error('Kandidat tidak ditemukan');
+    }
+
+    await dataKandidat.destroy();
+
+    res.status(200).send({
+      message: 'Berhasil menghapus kandidat'
+    });
   } catch(e) {
     console.log(e)
     res.status(400).send({

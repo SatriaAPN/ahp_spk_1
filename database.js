@@ -135,6 +135,28 @@ sesiRekrutmen.beforeValidate(async (sesiRekrutmen, options) => {
   }
 });
 
+sesiRekrutmen.beforeDestroy(async (sesiRekrutmen, options) => {
+  try {
+    // check apakah sesi rekrutmen telah selesai
+    if(sesiRekrutmen.status === 'selesai') {
+      throw new Error('Sesi rekrutmen telah selesai, tidak dapat menghapus sesi rekrutmen');
+    }
+
+    // check apakah ada kandidat yang sudah terdaftar
+    const dataKandidat = await kandidat.findOne({
+      where: {
+        id_sesi_rekrutmen: sesiRekrutmen.id
+      }
+    });
+
+    if(dataKandidat) {
+      throw new Error('Sesi rekrutmen telah memiliki kandidat, tidak dapat menghapus sesi rekrutmen');
+    }
+  } catch(e) {
+    throw e;
+  }
+});
+
 const kandidat = sequelize.define('kandidat', {
   // Model attributes are defined here
   nama: {
@@ -168,6 +190,30 @@ const kandidat = sequelize.define('kandidat', {
 }, {
   // Other model options go here
   freezeTableName: true
+});
+
+kandidat.beforeDestroy(async (kandidat, options) => {
+  try {
+    // check apakah sesi rekrutmen telah selesai
+    const dataSesiRekrutmen = await sesiRekrutmen.findOne({
+      where: {
+        id: kandidat.id_sesi_rekrutmen
+      }
+    });
+
+    if(dataSesiRekrutmen.status === 'selesai') {
+      throw new Error('Sesi rekrutmen telah selesai, tidak dapat menghapus kandidat');
+    }
+
+    // hapus nilai kandidat
+    await nilaiKandidat.destroy({
+      where: {
+        id_kandidat: kandidat.id
+      }
+    });
+  } catch(e) {
+    throw e;
+  }
 });
 
 const nilaiKandidat = sequelize.define('nilai_kandidat', {

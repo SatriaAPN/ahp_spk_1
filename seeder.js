@@ -17,7 +17,7 @@ const seeder = async (model) => {
   
     await createSesiRekrutmen(model);
   } catch(e) {
-    throw new e;
+    throw e;
   }
 }
 

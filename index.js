@@ -1472,8 +1472,7 @@ app.get('/sesi-seleksi-programmer', async (req, res, next) => {
           coalesce(jumlah_kandidat_telah_dinilai_per_sesi.count, 0) as "jumlahKandidatDinilai",
           case
             when jumlah_kandidat_per_sesi.id_sesi_rekrutmen is null then 'belum dimulai'
-            when jumlah_kandidat_per_sesi.count > jumlah_kandidat_telah_dinilai_per_sesi.count then 'sedang berjalan'
-            else 'selesai'
+            when sr.status
           end as "statusSesi",
           case 
             when jumlah_kandidat_per_sesi.id_sesi_rekrutmen is null then true
@@ -1548,7 +1547,7 @@ app.get('/sesi-seleksi-programmer/:id', async (req, res, next) => {
         replacements: { idSesi }
       }
     );
-    
+
     res.status(200).send({
       message: 'Berhasil mendapatkan daftar sesi perekrutan',
       data: {

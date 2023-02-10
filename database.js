@@ -104,6 +104,14 @@ const sesiRekrutmen = sequelize.define('sesi_rekrutmen', {
     type: DataTypes.INTEGER,
     allowNull: false
   },
+  status: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isIn: [['sedang berlangsung', 'selesai']]
+    },
+    defaultValue: 'sedang berlangsung'
+  },
 }, {
   // Other model options go here
   freezeTableName: true

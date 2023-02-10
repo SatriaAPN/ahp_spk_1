@@ -1535,26 +1535,20 @@ app.get('/sesi-seleksi-programmer/:id', async (req, res, next) => {
           k.id,
           k.nama,
           k.email,
-          k.no_hp
+          k.no_hp,
+          k.rata_rata_nilai_ideal,
+          k.total_nilai_normal,
+          rank() over (order by k.total_nilai_normal) 
         from kandidat k 
         where k.id_sesi_rekrutmen = :idSesi
+        order by k.total_nilai_normal asc
       `, 
       { 
         type: sequelize.QueryTypes.SELECT, 
         replacements: { idSesi }
       }
     );
-
-    daftarKandidatSesi = daftarKandidatSesi.map(async (kandidat) => {
-      const nilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(kandidat.id);
-      kandidat.rataRataNilaiIdealKandidat = nilaiKandidat.rataRataNilaiIdealKandidat, 
-      kandidat.totalNilaiNormalkandidat = nilaiKandidat.totalNilaiNormalkandidat
-
-      return kandidat;
-    })
-
-    daftarKandidatSesi = await Promise.all(daftarKandidatSesi);
-
+    
     res.status(200).send({
       message: 'Berhasil mendapatkan daftar sesi perekrutan',
       data: {
@@ -1568,19 +1562,6 @@ app.get('/sesi-seleksi-programmer/:id', async (req, res, next) => {
     });
   }
 })
-
-
-
-app.get('/test/test/:id', async (req, res) => {
-  try {
-    res.status(200).json(await mendapatkanNilaiIdealDanNormalSuatuIntensitas(req.params.id));
-  } catch(e) {
-    console.log(e);
-    res.status(500).json(e.message);
-  }
-})
-
-
 
 app.listen(port, async () => {
   try {

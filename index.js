@@ -284,6 +284,66 @@ app.get('/kandidat-sudah-dinilai/:idSeniorProgrammer', async (req, res) => {
   }
 });
 
+app.get('/kandidat-belum-dinilai/daftar-intensitas-kriteria/:idKandidat', async (req, res) => {
+  try {
+    const { idKandidat } = req.params;
+
+    const dataKandidat = await kandidat.findOne({
+      where: {
+        id: idKandidat
+      }
+    });
+
+    if(!dataKandidat) {
+      throw new Error('Kandidat tidak ditemukan');
+    }
+
+    const dataSesiRekrutmen = await sesiRekrutmen.findOne({
+      where: {
+        id: dataKandidat.id_sesi_rekrutmen
+      }
+    });
+
+    const daftarKandidat = await sequelize.query(
+      `
+        select 
+          ka.id as "idKriteria",
+          ka.nama as "namaKriteria",
+          json_agg(daftar_intensitas) as "intensitasKriteria"
+        from kriteria_ahp ka
+          left join (
+            select
+              ika.id as "idIntensitas",
+              ika.nama as "namaIntensitas",
+              ika.id_kriteria_ahp
+            from intensitas_kriteria_ahp ika
+            order by ika.id
+          ) daftar_intensitas
+            on daftar_intensitas.id_kriteria_ahp = ka.id
+        where ka.jenis = 'intensitas kriteria'
+          and ka.id_versi_ahp = :versiAhp
+        group by ka.id, ka.nama
+        order by ka.id
+      `,
+      { 
+        type: sequelize.QueryTypes.SELECT,
+        replacements: {
+          versiAhp: dataSesiRekrutmen.id_versi_ahp
+        }
+      }
+    );
+
+    res.status(200).send({
+      message: 'Berhasil mendapatkan daftar kandidat',
+      data: {daftarKandidat}
+    });
+  } catch(e) {
+    res.status(400).send({
+      message: e.message
+    });
+  }
+});
+
 /**
  * Human Resource
  */

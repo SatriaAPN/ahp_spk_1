@@ -284,6 +284,41 @@ app.get('/kandidat-sudah-dinilai/:idSeniorProgrammer', async (req, res) => {
   }
 });
 
+app.get('/kandidat-sudah-dinilai/nilai-kandidat/:idKandidat', async (req, res) => {
+  try {
+    const { idKandidat } = req.params;    
+
+    const daftarNilaiKandidat = await sequelize.query(
+      `
+        select
+          ka.nama as "kriteria",
+          ika.nama as "intensitas"
+        from nilai_kandidat nk 
+        inner join intensitas_kriteria_ahp ika 
+          on ika.id = nk.id_intensitas_kriteria_ahp
+        inner join kriteria_ahp ka 
+          on ka.id = ika.id_kriteria_ahp
+        where nk.id_kandidat = :idKandidat         
+      `,
+      { 
+        type: sequelize.QueryTypes.SELECT,
+        replacements: {
+          idKandidat: idKandidat
+        }
+      }
+    );
+
+    res.status(200).send({
+      data: {daftarNilaiKandidat}
+    });
+  } catch(e) {
+    console.log(e);
+    res.status(400).send({
+      message: e.message
+    });
+  }
+});
+
 app.get('/kandidat-belum-dinilai/daftar-intensitas-kriteria/:idKandidat', async (req, res) => {
   try {
     const { idKandidat } = req.params;

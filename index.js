@@ -1,7 +1,9 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 const seeder = require('./seeder');
+
 const dropdown = [
   {
     id: 1,
@@ -841,6 +843,22 @@ app.post('/pusat-kontrol-ahp/kriteria', async (req, res, next) => {
 
     res.status(200).send({
       message: 'Data berhasil disimpan'
+    });
+  } catch(e) {
+    console.log(e)
+    res.status(400).send({
+      message: e.message
+    });
+  }
+})
+
+app.get('/pusat-kontrol-ahp/kriteria/dropdown', async (req, res, next) => {
+  try {
+    res.status(200).send({
+      message: 'Data berhasil diambil',
+      data: {
+        jenisKriteria: ['sub-kriteria', 'intensitas kriteria']
+      }
     });
   } catch(e) {
     console.log(e)

@@ -639,7 +639,8 @@ app.get('/pusat-kontrol-ahp/kriteria', async (req, res, next) => {
             select
               ka.id as "idKriteria",
               ka.nama as "namaKriteria",
-              true as "bisaDiClick"
+              true as "bisaDiClick",
+              ka.jenis
             from kriteria_ahp ka
             where 
               (
@@ -653,7 +654,8 @@ app.get('/pusat-kontrol-ahp/kriteria', async (req, res, next) => {
             select
               ika.id as "idKriteria",
               ika.nama as "namaKriteria",
-              false as "bisaDiClick"
+              false as "bisaDiClick",
+              ka.jenis
             from intensitas_kriteria_ahp ika 
             where ika.id_kriteria_ahp = :id_kriteria_induk
             order by ika.id

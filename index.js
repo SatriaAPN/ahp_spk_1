@@ -825,7 +825,6 @@ app.post('/pusat-kontrol-ahp/kriteria', async (req, res, next) => {
       const dataDuplikasi = await duplikasiDataLamaAhp();
 
       idKriteriaInduk = dataDuplikasi.idKriteriaTerbaru[idKriteriaInduk];
-      idKriteriaKedua = dataDuplikasi.idKriteriaTerbaru[idKriteriaKedua];
       idVersiAhpTerbaru = dataDuplikasi.versiAhpBaru.id;
     } 
 

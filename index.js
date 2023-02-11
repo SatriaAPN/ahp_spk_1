@@ -655,7 +655,7 @@ app.get('/pusat-kontrol-ahp/kriteria', async (req, res, next) => {
               ika.id as "idKriteria",
               ika.nama as "namaKriteria",
               false as "bisaDiClick",
-              ka.jenis
+              null as jenis
             from intensitas_kriteria_ahp ika 
             where ika.id_kriteria_ahp = :id_kriteria_induk
             order by ika.id

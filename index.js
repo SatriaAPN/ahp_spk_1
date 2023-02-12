@@ -559,6 +559,62 @@ app.get('/pusat-kontrol-ahp/kriteria', async (req, res, next) => {
       jenisKriteria = kriteriaInduk.jenis;
     }
 
+    const daftarKriteria = await sequelize.query(
+      `
+        select 
+          a.*
+        from (
+          (
+            select
+              ka.id as "idKriteria",
+              ka.nama as "namaKriteria",
+              true as "bisaDiClick",
+              ka.jenis
+            from kriteria_ahp ka
+            where 
+              (
+                :id_kriteria_induk is null
+                and ka.id_kriteria_induk is null
+              ) or (
+                ka.id_kriteria_induk = :id_kriteria_induk
+              )
+            order by ka.id
+          ) union all (
+            select
+              ika.id as "idKriteria",
+              ika.nama as "namaKriteria",
+              false as "bisaDiClick",
+              null as jenis
+            from intensitas_kriteria_ahp ika 
+            where ika.id_kriteria_ahp = :id_kriteria_induk
+            order by ika.id
+          )
+        ) a  
+      `,
+      { 
+        type: sequelize.QueryTypes.SELECT,
+        replacements: {
+          id_kriteria_induk: idKriteriaInduk
+        }
+      }
+    );
+
+    if(daftarKriteria.length < 2) {
+      for(let kriteria of daftarKriteria) {
+        kriteria.terdapatError = false;
+        kriteria.bobot = null;
+      }
+
+      res.status(200).send({
+        message: 'Data berhasil diambil',
+        data: {
+          jenisKriteria: jenisKriteria,
+          daftarKriteria: daftarKriteria,
+          daftarPerbandingan: []
+        }
+      });
+    }
+
     const daftarKriteriaBermasalah = await sequelize.query(
       `
         select 
@@ -638,46 +694,6 @@ app.get('/pusat-kontrol-ahp/kriteria', async (req, res, next) => {
         }
       }
     }
-
-    const daftarKriteria = await sequelize.query(
-      `
-        select 
-          a.*
-        from (
-          (
-            select
-              ka.id as "idKriteria",
-              ka.nama as "namaKriteria",
-              true as "bisaDiClick",
-              ka.jenis
-            from kriteria_ahp ka
-            where 
-              (
-                :id_kriteria_induk is null
-                and ka.id_kriteria_induk is null
-              ) or (
-                ka.id_kriteria_induk = :id_kriteria_induk
-              )
-            order by ka.id
-          ) union all (
-            select
-              ika.id as "idKriteria",
-              ika.nama as "namaKriteria",
-              false as "bisaDiClick",
-              null as jenis
-            from intensitas_kriteria_ahp ika 
-            where ika.id_kriteria_ahp = :id_kriteria_induk
-            order by ika.id
-          )
-        ) a  
-      `,
-      { 
-        type: sequelize.QueryTypes.SELECT,
-        replacements: {
-          id_kriteria_induk: idKriteriaInduk
-        }
-      }
-    );
 
     const bobotKriteria = await mendapatkanBobotKriteria(idKriteriaInduk);
 

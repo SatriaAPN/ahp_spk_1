@@ -1581,16 +1581,7 @@ app.put('/pusat-kontrol-ahp/kriteria/perbandingan', async (req, res, next) => {
 
     let { idKriteriaPertama, idKriteriaKedua } = req.body;
 
-    if(!idKriteriaPertama.includes('kriteria')) {
-      throw new Error('idKriteriaPertama tidak valid');
-    }
-
-    if(!idKriteriaKedua.includes('kriteria')) {
-      throw new Error('idKriteriaKedua tidak valid');
-    }
-
-    idKriteriaPertama = Number(idKriteriaPertama.split('_')[1]);
-    idKriteriaKedua = Number(idKriteriaKedua.split('_')[1]);
+    const idKriteriaPertamaUnchanged = idKriteriaPertama;
 
     if(!idKriteriaPertama) {
       throw new Error('idKriteriaPertama tidak boleh kosong');
@@ -1603,6 +1594,21 @@ app.put('/pusat-kontrol-ahp/kriteria/perbandingan', async (req, res, next) => {
     if(!idPenilaian) {
       throw new Error('idPenilaian tidak boleh kosong');
     }
+
+    // if(!idKriteriaPertama.includes('kriteria')) {
+    //   throw new Error('idKriteriaPertama tidak valid');
+    // }
+
+    // if(!idKriteriaKedua.includes('kriteria')) {
+    //   throw new Error('idKriteriaKedua tidak valid');
+    // }
+
+    const idKriteriaPertamaSplitted = idKriteriaPertama.split('_');
+    const idKriteriaKeduaSplitted = idKriteriaKedua.split('_');
+    idKriteriaPertama = Number(idKriteriaPertamaSplitted[1]);
+    idKriteriaKedua = Number(idKriteriaKeduaSplitted[1]);
+    idIntensitasPertama = Number(idKriteriaPertamaSplitted[1]);
+    idIntensitasKedua = Number(idKriteriaKeduaSplitted[1]);
 
     const versiAhpTerbaru = await versiAhp.findOne({
       order: [
@@ -1626,62 +1632,109 @@ app.put('/pusat-kontrol-ahp/kriteria/perbandingan', async (req, res, next) => {
         on sr.id_versi_ahp = versi_ahp_terbaru.id
     `, { type: sequelize.QueryTypes.SELECT });
 
-    // jika versi paling baru dari ahp digunakan, maka kita perlu duplikasi membuat versi ahp terbaru
-    // dan duplikasi data-data yang ada di versi ahp lama.
-    if(ahpVersiTerbaruDigunakan[0].versiDigunakan) {
-      const dataDuplikasi = await duplikasiDataLamaAhp();
+    if(idKriteriaPertamaUnchanged.includes('kriteria')) {
+      // jika versi paling baru dari ahp digunakan, maka kita perlu duplikasi membuat versi ahp terbaru
+      // dan duplikasi data-data yang ada di versi ahp lama.
+      if(ahpVersiTerbaruDigunakan[0].versiDigunakan) {
+        const dataDuplikasi = await duplikasiDataLamaAhp();
 
-      idKriteriaPertama = dataDuplikasi.idKriteriaTerbaru[idKriteriaPertama];
-      idKriteriaKedua = dataDuplikasi.idKriteriaTerbaru[idKriteriaKedua];
-      idVersiAhpTerbaru = dataDuplikasi.versiAhpBaru.id;
-    }
-
-    const perbandinganKriteriaPertamaLama = await perbandinganKriteriaAhp.findOne({
-      where: {
-        id_versi_ahp: idVersiAhpTerbaru,
-        id_kriteria_pertama: idKriteriaPertama,
-        id_kriteria_kedua: idKriteriaKedua
+        idKriteriaPertama = dataDuplikasi.idKriteriaTerbaru[idKriteriaPertama];
+        idKriteriaKedua = dataDuplikasi.idKriteriaTerbaru[idKriteriaKedua];
+        idVersiAhpTerbaru = dataDuplikasi.versiAhpBaru.id;
       }
-    });
-
-    if(perbandinganKriteriaPertamaLama) {
-      await perbandinganKriteriaAhp.update({
-        nilai: dropdownNilai[idPenilaian]
-      }, {
+console.log(idKriteriaPertama, idKriteriaKedua, idVersiAhpTerbaru)
+      const perbandinganKriteriaPertamaLama = await perbandinganKriteriaAhp.findOne({
         where: {
-          id: perbandinganKriteriaPertamaLama.id
+          id_versi_ahp: idVersiAhpTerbaru,
+          id_kriteria_pertama: idKriteriaPertama,
+          id_kriteria_kedua: idKriteriaKedua
         }
       });
-    } else {
-      await perbandinganKriteriaAhp.create({
-        id_kriteria_pertama: idKriteriaPertama,
-        id_kriteria_kedua: idKriteriaKedua,
-        nilai: dropdownNilai[idPenilaian]
-      });
-    }
-
-    const perbandinganKriteriaKeduaLama = await perbandinganKriteriaAhp.findOne({
-      where: {
-        id_versi_ahp: idVersiAhpTerbaru,
-        id_kriteria_pertama: idKriteriaKedua,
-        id_kriteria_kedua: idKriteriaPertama
+console.log(perbandinganKriteriaPertamaLama)
+      if(perbandinganKriteriaPertamaLama) {
+        console.log('masuk sini')
+        console.log(perbandinganKriteriaPertamaLama.id)
+        await perbandinganKriteriaPertamaLama.update({
+          nilai: dropdownNilai[idPenilaian]
+        });
+        console.log('masuk sini 2')
+      } else {
+        await perbandinganKriteriaAhp.create({
+          id_kriteria_pertama: idKriteriaPertama,
+          id_kriteria_kedua: idKriteriaKedua,
+          nilai: dropdownNilai[idPenilaian]
+        });
       }
-    });
 
-    if(perbandinganKriteriaKeduaLama) {
-      await perbandinganKriteriaAhp.update({
-        nilai: reverseDropdownNilai[idPenilaian]
-      }, {
+      const perbandinganKriteriaKeduaLama = await perbandinganKriteriaAhp.findOne({
         where: {
-          id: perbandinganKriteriaKeduaLama.id
+          id_versi_ahp: idVersiAhpTerbaru,
+          id_kriteria_pertama: idKriteriaKedua,
+          id_kriteria_kedua: idKriteriaPertama
         }
       });
+console.log(perbandinganKriteriaKeduaLama)
+      if(perbandinganKriteriaKeduaLama) {
+        await perbandinganKriteriaKeduaLama.update({
+          nilai: reverseDropdownNilai[idPenilaian]
+        });
+      } else {
+        await perbandinganKriteriaAhp.create({
+          id_kriteria_pertama: idKriteriaKedua,
+          id_kriteria_kedua: idKriteriaPertama,
+          nilai: reverseDropdownNilai[idPenilaian]
+        });
+      }
     } else {
-      await perbandinganKriteriaAhp.create({
-        id_kriteria_pertama: idKriteriaKedua,
-        id_kriteria_kedua: idKriteriaPertama,
-        nilai: reverseDropdownNilai[idPenilaian]
+      // jika versi paling baru dari ahp digunakan, maka kita perlu duplikasi membuat versi ahp terbaru
+      // dan duplikasi data-data yang ada di versi ahp lama.
+      if(ahpVersiTerbaruDigunakan[0].versiDigunakan) {
+        const dataDuplikasi = await duplikasiDataLamaAhp();
+
+        idIntensitasPertama = dataDuplikasi.idIntensitasKriteriaTerbaru[idIntensitasPertama];
+        idIntensitasKedua = dataDuplikasi.idIntensitasKriteriaTerbaru[idIntensitasKedua];
+        idVersiAhpTerbaru = dataDuplikasi.versiAhpBaru.id;
+      }
+
+      const perbandinganIntensitasKriteriaPertamaLama = await perbandinganIntensitasKriteriaAhp.findOne({
+        where: {
+          id_versi_ahp: idVersiAhpTerbaru,
+          id_intensitas_kriteria_pertama: idIntensitasPertama,
+          id_intensitas_kriteria_kedua: idIntensitasKedua
+        }
       });
+
+      if(perbandinganIntensitasKriteriaPertamaLama) {
+        await perbandinganIntensitasKriteriaPertamaLama.update({
+          nilai: dropdownNilai[idPenilaian]
+        });
+      } else {
+        await perbandinganIntensitasKriteriaAhp.create({
+          id_intensitas_kriteria_pertama: idIntensitasPertama,
+          id_intensitas_kriteria_kedua: idIntensitasKedua,
+          nilai: dropdownNilai[idPenilaian]
+        });
+      }
+
+      const perbandinganIntensitasKriteriaKeduaLama = await perbandinganIntensitasKriteriaAhp.findOne({
+        where: {
+          id_versi_ahp: idVersiAhpTerbaru,
+          id_intensitas_kriteria_pertama: idIntensitasKedua,
+          id_intensitas_kriteria_kedua: idIntensitasPertama
+        }
+      });
+
+      if(perbandinganIntensitasKriteriaKeduaLama) {
+        await perbandinganIntensitasKriteriaKeduaLama.update({
+          nilai: reverseDropdownNilai[idPenilaian]
+        });
+      } else {
+        await perbandinganIntensitasKriteriaAhp.create({
+          id_intensitas_kriteria_pertama: idIntensitasKedua,
+          id_intensitas_kriteria_kedua: idIntensitasPertama,
+          nilai: reverseDropdownNilai[idPenilaian]
+        });
+      }
     }
 
     res.status(200).send({

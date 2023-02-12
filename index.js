@@ -3,7 +3,7 @@ const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 const seeder = require('./seeder');
-
+const cors = require('cors');
 const dropdown = [
   {
     id: 1,
@@ -157,18 +157,20 @@ const {
   periksaApakahSemuaKriteriaTidakMemilikiError
 } = require('./functions');
 
-app.use(function(req, res, next) {
-  // cors origin
-  res.header("Access-Control-Allow-Origin", "*");
+// app.use(function(req, res, next) {
+//   // cors origin
+//   res.header("Access-Control-Allow-Origin", "*");
 
-  // cors header
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   // cors header
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   
-  // cors method
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+//   // cors method
+//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
 
-  next();
-});
+//   next();
+// });
+
+app.use(cors());
 
 app.use(express.json());
 

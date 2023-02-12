@@ -421,114 +421,37 @@ const mendapatkanBobotKriteria = async (idKriteriaInduk) => {
     );
 
     const daftarKriteria = await sequelize.query(
-      `
-        select 
-          a.*
-        from (
+      `select 
+      a.*
+    from (
+      (
+        select
+          ka.id,
+          ka.nama 
+        from kriteria_ahp ka
+        where (
+            :id_kriteria_induk is null
+            and ka.id_kriteria_induk is null
+          ) or
           (
-            select 
-              total_kriteria.count as "totalKriteria",
-              jsonb_agg(data_perbandingan) as "dataPerbandinganKriteria"
-            from (
-                select
-                  count(ka.id)
-                from kriteria_ahp ka
-                left join (
-                  select
-                    va.id
-                  from versi_ahp va
-                  order by va.id desc
-                  limit 1
-                ) versi_ahp_terbaru 
-                  on versi_ahp_terbaru.id = ka.id_versi_ahp
-                where ( 
-                  (
-                    :id_kriteria_induk is null
-                    and ka.id_kriteria_induk is null
-                    and versi_ahp_terbaru.id is not null
-                  ) or
-                  (
-                    ka.id_kriteria_induk = :id_kriteria_induk
-                  )
-                )
-              ) total_kriteria
-              inner join (
-                select 
-                  kriteria_pertama.id as id_kriteria_pertama,
-                  kriteria_pertama.nama as nama_kriteria_pertama,
-                  kriteria_kedua.id as id_kriteria_kedua,
-                  kriteria_kedua.nama as nama_kriteria_kedua,
-                  pka.nilai
-                from kriteria_ahp as kriteria_pertama
-                  inner join kriteria_ahp kriteria_kedua
-                    on kriteria_kedua.id_versi_ahp = kriteria_pertama.id_versi_ahp
-                  left join perbandingan_kriteria_ahp pka 
-                    on pka.id_kriteria_pertama = kriteria_pertama.id
-                    and pka.id_kriteria_kedua = kriteria_kedua.id
-                  inner join (
-                    select
-                      va.id
-                    from versi_ahp va 
-                    order by va.id desc 
-                    limit 1
-                  ) versi_ahp 
-                    on versi_ahp.id = kriteria_pertama.id_versi_ahp
-                    and versi_ahp.id = kriteria_kedua.id_versi_ahp
-                where ( 
-                    (
-                      :id_kriteria_induk is null
-                      and kriteria_pertama.id_kriteria_induk is null
-                      and kriteria_kedua.id_kriteria_induk is null
-                    ) or
-                    (
-                      kriteria_pertama.id_kriteria_induk = :id_kriteria_induk
-                      and kriteria_kedua.id_kriteria_induk = :id_kriteria_induk
-                    )
-                  )
-                order by kriteria_pertama.id, kriteria_kedua.id	
-              ) as data_perbandingan on true
-              group by total_kriteria.count
-          ) union all (
-            select
-              total_intensitas.count as "totalKriteria",
-              jsonb_agg(data_perbandingan) as "dataPerbandinganKriteria"
-            from (
-                select
-                  count(ika.id)
-                from intensitas_kriteria_ahp ika 
-                where 
-                  ika.id_kriteria_ahp = :id_kriteria_induk
-              ) total_intensitas
-              inner join (
-                select
-                  intensitas_pertama.id as id_kriteria_pertama,
-                  intensitas_pertama.nama as nama_kriteria_pertama,
-                  intensitas_kedua.id as id_kriteria_kedua,
-                  intensitas_kedua.nama as nama_kriteria_kedua,
-                  pika.nilai
-                from intensitas_kriteria_ahp intensitas_pertama
-                  inner join intensitas_kriteria_ahp intensitas_kedua
-                    on intensitas_kedua.id_kriteria_ahp = intensitas_pertama.id_kriteria_ahp
-                  left join perbandingan_intensitas_kriteria_ahp pika 
-                    on pika.id_intensitas_kriteria_pertama = intensitas_pertama.id
-                    and pika.id_intensitas_kriteria_kedua = intensitas_kedua.id
-                where ( 
-                    (
-                      :id_kriteria_induk is null
-                      and intensitas_pertama.id_kriteria_ahp is null
-                      and intensitas_kedua.id_kriteria_ahp is null
-                    ) or
-                    (
-                      intensitas_pertama.id_kriteria_ahp = :id_kriteria_induk
-                      and intensitas_kedua.id_kriteria_ahp = :id_kriteria_induk
-                    )
-                  )
-                order by intensitas_pertama.id, intensitas_kedua.id	
-              )	as data_perbandingan on true
-            group by total_intensitas.count
+            ka.id_kriteria_induk = :id_kriteria_induk
           )
-        ) a
-      `,
+        order by ka.id 
+      ) union all (
+        select 
+          ika.id,
+          ika.nama 			
+        from intensitas_kriteria_ahp ika 
+        where (
+            :id_kriteria_induk is null
+            and ika.id_kriteria_ahp is null
+          ) or
+          (
+            ika.id_kriteria_ahp = :id_kriteria_induk
+          )
+        order by ika.id 
+      )
+    ) a`,
       { 
         type: sequelize.QueryTypes.SELECT,
         replacements: {

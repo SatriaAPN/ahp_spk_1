@@ -158,8 +158,15 @@ const {
 } = require('./functions');
 
 app.use(function(req, res, next) {
+  // cors origin
   res.header("Access-Control-Allow-Origin", "*");
+
+  // cors header
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  
+  // cors method
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+
   next();
 });
 

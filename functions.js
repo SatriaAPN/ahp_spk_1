@@ -326,10 +326,19 @@ const mendapatkanBobotKriteria = async (idKriteriaInduk) => {
             select
               count(ka.id)
             from kriteria_ahp ka 
+            left join (
+              select
+              	va.id
+              from versi_ahp va
+              order by va.id desc 
+              limit 1
+            ) versi_terbaru_ahp on
+            	versi_terbaru_ahp.id = ka.id_versi_ahp
             where ( 
               (
                 :id_kriteria_induk is null
                 and ka.id_kriteria_induk is null
+                and versi_terbaru_ahp.id is not null
               ) or
               (
                 ka.id_kriteria_induk = :id_kriteria_induk
@@ -429,9 +438,18 @@ const mendapatkanBobotKriteria = async (idKriteriaInduk) => {
           ka.id,
           ka.nama 
         from kriteria_ahp ka
+          left join (
+	          select
+	          	va.id
+	          from versi_ahp va
+	          order by va.id desc 
+	          limit 1
+	        ) versi_terbaru_ahp on
+	        	versi_terbaru_ahp.id = ka.id_versi_ahp
         where (
             :id_kriteria_induk is null
             and ka.id_kriteria_induk is null
+            and versi_terbaru_ahp.id is not null
           ) or
           (
             ka.id_kriteria_induk = :id_kriteria_induk

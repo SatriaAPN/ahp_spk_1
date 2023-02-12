@@ -253,8 +253,8 @@ const perbandinganKriteriaAhp = sequelize.define('perbandingan_kriteria_ahp', {
     type: DataTypes.INTEGER,
     allowNull: false  
   },
-  nama_nilai: {
-    type: DataTypes.STRING,
+  id_nilai: {
+    type: DataTypes.INTEGER,
     allowNull: false
   }
 }, {
@@ -273,46 +273,46 @@ perbandinganKriteriaAhp.beforeValidate(async (perbandinganKriteriaAhp, options) 
   perbandinganKriteriaAhp.id_versi_ahp = kriteriaPertama.id_versi_ahp;
 
   // set nama nilai
-  perbandinganKriteriaAhp.nama_nilai = dapatkanNamaNilai(perbandinganKriteriaAhp.nilai);
+  perbandinganKriteriaAhp.id_nilai = dapatkanNamaNilai(perbandinganKriteriaAhp.nilai);
 });
 
 const dapatkanNamaNilai = (nilai) => {
   try {
     switch(nilai) {
       case 9: 
-        return 'Mutlak sangat penting dari';
-      case 8: 
-        return 'Mendekati mutlak dari';
-      case 7: 
-        return 'Sangat penting dari';
-      case 6: 
-        return 'Mendekati sangat penting dari';
-      case 5: 
-        return 'Lebih penting dari';
-      case 4: 
-        return 'Mendekati lebih penting dari';
-      case 3: 
-        return 'Sedikit lebih penting dari';
-      case 2: 
-        return 'Mendekati sedikit lebih penting dari';
-      case 1: 
-        return 'Sama penting dengan';
-      case 1/2: 
-        return 'Mendekati sedikit tidak lebih penting dari';
-      case 1/3: 
-        return 'Sedikit lebih tidak penting dari';
-      case 1/4: 
-        return 'Mendekati lebih tidak penting dari';
-      case 1/5: 
-        return 'Lebih tidak penting dari';
-      case 1/6: 
-        return 'Mendekati sangat tidak penting dari';
-      case 1/7: 
-        return 'Sangat tidak penting dari';
-      case 1/8: 
-        return 'Mendekati mutlak tidak penting dari';
-      case 1/9: 
-        return 'Mutlak sangat tidak penting dari';
+        return 1;
+      case 8:
+        return 2;
+      case 7:
+        return 3;
+      case 6:
+        return 4;
+      case 5:
+        return 5;
+      case 4:
+        return 6;
+      case 3:
+        return 7;
+      case 2:
+        return 8;
+      case 1:
+        return 9;
+      case 1/2:
+        return 10;
+      case 1/3:
+        return 11;
+      case 1/4:
+        return 12;
+      case 1/5:
+        return 13;
+      case 1/6:
+        return 14;
+      case 1/7:
+        return 15;
+      case 1/8:
+        return 16;
+      case 1/9:
+        return 17;
     }
   } catch(e) {
     throw e;
@@ -337,8 +337,8 @@ const perbandinganIntensitasKriteriaAhp = sequelize.define('perbandingan_intensi
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  nama_nilai: {
-    type: DataTypes.STRING,
+  id_nilai: {
+    type: DataTypes.INTEGER,
     allowNull: false
   }
 }, {
@@ -357,7 +357,7 @@ perbandinganIntensitasKriteriaAhp.beforeValidate(async (perbandinganIntensitasKr
   perbandinganIntensitasKriteriaAhp.id_versi_ahp = intensitasKriteriaPertama.id_versi_ahp;
 
   // set nama nilai
-  perbandinganIntensitasKriteriaAhp.nama_nilai = dapatkanNamaNilai(perbandinganIntensitasKriteriaAhp.nilai);
+  perbandinganIntensitasKriteriaAhp.id_nilai = dapatkanNamaNilai(perbandinganIntensitasKriteriaAhp.nilai);
 });
 
 const periksaApakahSemuaKriteriaTidakMemilikiError = async () => {

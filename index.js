@@ -709,7 +709,7 @@ app.get('/pusat-kontrol-ahp/kriteria', async (req, res, next) => {
               'kriteria_' || kriteria_kedua.id as idKriteriaKedua,
               kriteria_kedua.nama as namaKriteriaKedua,
               pka.nilai,
-              pka.nama_nilai as namaNilai,
+              pka.id_nilai as idNilai,
               case
                 when pka.nilai is null then true
                 else false
@@ -749,7 +749,7 @@ app.get('/pusat-kontrol-ahp/kriteria', async (req, res, next) => {
               'intensitas_' || intensitas_kriteria_kedua.id as id_kriteria_kedua,
               intensitas_kriteria_kedua.nama as nama_kriteria_kedua,
               pika.nilai,
-              pika.nama_nilai as namaNilai,
+              pika.id_nilai as idNilai,
               case
                 when pika.nilai is null then true
                 else false

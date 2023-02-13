@@ -415,6 +415,20 @@ app.post('/kandidat-belum-dinilai/nilai-kandidat/:idKandidat', async (req, res) 
       }
     }
 
+    let nilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(idKandidat);
+
+    const dataKandidat = await kandidat.findOne({
+      where: {
+        id: idKandidat
+      }
+    });
+
+    // update data kandidat
+    await dataKandidat.update({
+      rata_rata_nilai_ideal: nilaiKandidat.rataRataNilaiIdealKandidat,
+      total_nilai_normal: nilaiKandidat.totalNilaiNormalkandidat
+    });
+
     res.status(200).send({
       message: 'Berhasil menambahkan nilai kandidat'
     });
@@ -559,71 +573,6 @@ app.get('/pusat-kontrol-ahp/kriteria', async (req, res, next) => {
       jenisKriteria = kriteriaInduk.jenis;
     }
 
-    const daftarKriteria = await sequelize.query(
-      `
-        select 
-          a.*
-        from (
-          (
-            select
-              ka.id as "idKriteria",
-              ka.nama as "namaKriteria",
-              true as "bisaDiClick",
-              ka.jenis
-            from kriteria_ahp ka
-            left join (
-              select
-                va.id
-              from versi_ahp va 
-              order by va.id desc
-              limit 1
-            ) versi_ahp_terbaru
-              on versi_ahp_terbaru.id = ka.id_versi_ahp
-            where 
-              (
-                :id_kriteria_induk is null
-                and ka.id_kriteria_induk is null
-                and versi_ahp_terbaru.id is not null
-              ) or (
-                ka.id_kriteria_induk = :id_kriteria_induk
-              )
-            order by ka.id
-          ) union all (
-            select
-              ika.id as "idKriteria",
-              ika.nama as "namaKriteria",
-              false as "bisaDiClick",
-              null as jenis
-            from intensitas_kriteria_ahp ika 
-            where ika.id_kriteria_ahp = :id_kriteria_induk
-            order by ika.id
-          )
-        ) a  
-      `,
-      { 
-        type: sequelize.QueryTypes.SELECT,
-        replacements: {
-          id_kriteria_induk: idKriteriaInduk
-        }
-      }
-    );
-
-    if(daftarKriteria.length < 2) {
-      for(let kriteria of daftarKriteria) {
-        kriteria.terdapatError = false;
-        kriteria.bobot = null;
-      }
-
-      return res.status(200).send({
-        message: 'Data berhasil diambil',
-        data: {
-          jenisKriteria: jenisKriteria,
-          daftarKriteria: daftarKriteria,
-          daftarPerbandingan: []
-        }
-      });
-    }
-
     const daftarKriteriaBermasalah = await sequelize.query(
       `
         select 
@@ -704,11 +653,57 @@ app.get('/pusat-kontrol-ahp/kriteria', async (req, res, next) => {
       }
     }
 
-    const bobotKriteria = await mendapatkanBobotKriteria(idKriteriaInduk);
+    const daftarKriteria = await sequelize.query(
+      `
+        select 
+          a.*
+        from (
+          (
+            select
+              ka.id as "idKriteria",
+              ka.nama as "namaKriteria",
+              true as "bisaDiClick",
+              ka.jenis
+            from kriteria_ahp ka
+            left join (
+              select
+                va.id
+              from versi_ahp va 
+              order by va.id desc
+              limit 1
+            ) versi_ahp_terbaru
+              on versi_ahp_terbaru.id = ka.id_versi_ahp
+            where 
+              (
+                :id_kriteria_induk is null
+                and ka.id_kriteria_induk is null
+                and versi_ahp_terbaru.id is not null
+              ) or (
+                ka.id_kriteria_induk = :id_kriteria_induk
+              )
+            order by ka.id
+          ) union all (
+            select
+              ika.id as "idKriteria",
+              ika.nama as "namaKriteria",
+              false as "bisaDiClick",
+              null as jenis
+            from intensitas_kriteria_ahp ika 
+            where ika.id_kriteria_ahp = :id_kriteria_induk
+            order by ika.id
+          )
+        ) a  
+      `,
+      { 
+        type: sequelize.QueryTypes.SELECT,
+        replacements: {
+          id_kriteria_induk: idKriteriaInduk
+        }
+      }
+    );
 
     for(let kriteria of daftarKriteria) {
       let indexKriteriaBermasalah = daftarKriteriaBermasalah.findIndex(kriteriaBermasalah => kriteriaBermasalah.id === kriteria.idKriteria);
-      let indexBobotKriteria = bobotKriteria.bobotMatriksPerbandingan.findIndex(bobot => bobot.id === kriteria.idKriteria);
 
       if(indexKriteriaBermasalah !== -1) {
         kriteria.terdapatError = daftarKriteriaBermasalah[indexKriteriaBermasalah].terdapatError;
@@ -716,10 +711,50 @@ app.get('/pusat-kontrol-ahp/kriteria', async (req, res, next) => {
         kriteria.terdapatError = false;
       }
 
+    }
+
+    if(daftarKriteria.length < 2) {
+      for(let kriteria of daftarKriteria) {
+        kriteria.bobot = null;
+      }
+
+      return res.status(200).send({
+        message: 'Data berhasil diambil',
+        data: {
+          jenisKriteria: jenisKriteria,
+          daftarKriteria: daftarKriteria,
+          daftarPerbandingan: []
+        }
+      });
+    }
+
+    const bobotKriteria = await mendapatkanBobotKriteria(idKriteriaInduk);
+
+    for(let kriteria of daftarKriteria) {
+      let indexBobotKriteria = bobotKriteria.bobotMatriksPerbandingan.findIndex(bobot => bobot.id === kriteria.idKriteria);
+
       if(indexBobotKriteria !== -1) {
-        kriteria.bobot = bobotKriteria.bobotMatriksPerbandingan[indexBobotKriteria].bobot;
+        if(bobotKriteria.bobotMatriksPerbandingan[indexBobotKriteria].bobot === null) {
+          kriteria.bobot = null;
+        } else {
+          kriteria.bobot = bobotKriteria.bobotMatriksPerbandingan[indexBobotKriteria].bobot.toFixed(4);
+        }
       } else {
         kriteria.bobot = null;
+      }
+    }
+
+    if(jenisKriteria === 'intensitas kriteria') {
+      for(let intensitas of daftarKriteria) {
+        const nilaiIdealDanNormalIntensitas = await mendapatkanNilaiIdealDanNormalSuatuIntensitas(intensitas.idKriteria);
+
+        if(nilaiIdealDanNormalIntensitas.nilaiIdeal === null) {
+          intensitas.nilaiIdeal = null;
+          intensitas.nilaiNormal = null;
+        } else {
+          intensitas.nilaiIdeal = nilaiIdealDanNormalIntensitas.nilaiIdeal.toFixed(4);
+          intensitas.nilaiNormal = nilaiIdealDanNormalIntensitas.nilaiNormal.toFixed(4);
+        }
       }
     }
 
@@ -1398,6 +1433,12 @@ app.post('/pusat-kontrol-ahp/intensitas', async (req, res ,next) => {
       const intensitasKriteria = await intensitasKriteriaAhp.create({
         id_kriteria_ahp: idKriteria,
         nama: namaIntensitas
+      });
+
+      await perbandinganIntensitasKriteriaAhp.create({
+        id_intensitas_kriteria_pertama: intensitasKriteria.id,
+        id_intensitas_kriteria_kedua: intensitasKriteria.id,
+        nilai: 1
       });
 
       return res.status(200).send({

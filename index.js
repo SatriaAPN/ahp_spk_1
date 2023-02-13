@@ -571,10 +571,19 @@ app.get('/pusat-kontrol-ahp/kriteria', async (req, res, next) => {
               true as "bisaDiClick",
               ka.jenis
             from kriteria_ahp ka
+            left join (
+              select
+                va.id
+              from versi_ahp va 
+              order by va.id desc
+              limit 1
+            ) versi_ahp_terbaru
+              on versi_ahp_terbaru.id = ka.id_versi_ahp
             where 
               (
                 :id_kriteria_induk is null
                 and ka.id_kriteria_induk is null
+                and versi_ahp_terbaru.id is not null
               ) or (
                 ka.id_kriteria_induk = :id_kriteria_induk
               )
@@ -605,7 +614,7 @@ app.get('/pusat-kontrol-ahp/kriteria', async (req, res, next) => {
         kriteria.bobot = null;
       }
 
-      res.status(200).send({
+      return res.status(200).send({
         message: 'Data berhasil diambil',
         data: {
           jenisKriteria: jenisKriteria,

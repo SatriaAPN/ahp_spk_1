@@ -103,6 +103,17 @@ const mendapatkanNilaiIdealDanNormalDariseluruhIntensitasSuatuKriteria = async (
       }
     );
 
+    //check if there is any null in the data
+    if(semuaIntensitasSuatuKriteria.length != (semuaNilaiPerbandinganIntensitasSuatuKriteria.length * 2)) {
+      for(intensitas of semuaIntensitasSuatuKriteria) {
+        intensitas.nilaiIdeal = null;
+        intensitas.nilaiNormal = null;
+        intensitas.bobot = null;
+      }
+
+      return semuaIntensitasSuatuKriteria;  
+    }
+
     const matriksPerbandinganIntensitasSuatuKriteria = [];
 
     for (let i = 0; i < semuaIntensitasSuatuKriteria.length; i++) {

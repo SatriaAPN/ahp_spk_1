@@ -2316,7 +2316,7 @@ const createNilaiKandidat = async (idKandidat, model) => {
     let nilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(idKandidat);
 
     // update data kandidat
-    model.kandidat.update({
+    await model.kandidat.update({
       rata_rata_nilai_ideal: nilaiKandidat.rataRataNilaiIdealKandidat,
       total_nilai_normal: nilaiKandidat.totalNilaiNormalkandidat
     }, {

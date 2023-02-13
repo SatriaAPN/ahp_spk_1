@@ -1958,7 +1958,7 @@ app.get('/sesi-seleksi-programmer', async (req, res, next) => {
           coalesce(jumlah_kandidat_telah_dinilai_per_sesi.count, 0) as "jumlahKandidatDinilai",
           case
             when jumlah_kandidat_per_sesi.id_sesi_rekrutmen is null then 'belum dimulai'
-            when sr.status
+            else sr.status
           end as "statusSesi",
           case 
             when jumlah_kandidat_per_sesi.id_sesi_rekrutmen is null then true
@@ -2072,10 +2072,10 @@ app.get('/sesi-seleksi-programmer/:id', async (req, res, next) => {
           k.id,
           k.nama,
           k.email,
-          k.no_hp,
-          k.rata_rata_nilai_ideal,
-          k.total_nilai_normal,
-          rank() over (order by k.total_nilai_normal) 
+          k.no_hp as "noHp",
+          k.rata_rata_nilai_ideal::numeric(4, 4) as "rataRataNilaiIdeal",
+          k.total_nilai_normal::numeric(4, 4) as "totalNilaiNormal",
+          rank() over (order by k.total_nilai_normal) as "rank" 
         from kandidat k 
         where k.id_sesi_rekrutmen = :idSesi
         order by k.total_nilai_normal asc

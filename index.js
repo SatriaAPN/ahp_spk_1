@@ -174,6 +174,11 @@ app.use(cors());
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(req.method, req.url);
+  next();
+});
+
 app.get('/', (req, res) => res.send('Hello World!'));
 
 app.post('/masuk', async (req, res) => {
@@ -2016,6 +2021,82 @@ app.post('/sesi-seleksi-programmer', async (req, res, next) => {
 
     if(!namaSesi) {
       throw new Error('Nama sesi harus diisi');
+    }
+
+    // check apakah ada issue pada metode ahp
+    const daftarKriteriaBermasalah = await sequelize.query(
+      `
+        select 
+          ka.id,
+          ka.nama,
+          ka.id_versi_ahp,
+          ka.id_kriteria_induk,
+          case 
+            when intensitas_kriteria_ahp_hitung.count >= 2
+              and perbandingan_intensitas_kriteria_ahp_hitung.count = intensitas_kriteria_ahp_hitung.count * intensitas_kriteria_ahp_hitung.count
+              then false
+            when kriteria_ahp_hitung.count >= 2
+              and perbandingan_kriteria_ahp_hitung.count = kriteria_ahp_hitung.count * kriteria_ahp_hitung.count
+              then false
+            else true
+          end as "terdapatError"
+        from kriteria_ahp ka
+        left join (
+          select
+            ika.id_kriteria_ahp,
+            count(ika.id)
+          from intensitas_kriteria_ahp ika 
+          group by ika.id_kriteria_ahp
+        ) as intensitas_kriteria_ahp_hitung 
+          on intensitas_kriteria_ahp_hitung.id_kriteria_ahp = ka.id 
+        left join (
+          select
+            ika.id_kriteria_ahp,
+            count(pika.id)
+          from perbandingan_intensitas_kriteria_ahp pika
+          left join intensitas_kriteria_ahp ika
+            on ika.id = pika.id_intensitas_kriteria_pertama
+          group by ika.id_kriteria_ahp
+        ) as perbandingan_intensitas_kriteria_ahp_hitung
+          on perbandingan_intensitas_kriteria_ahp_hitung.id_kriteria_ahp = ka.id
+        left join (
+          select
+            ka.id_kriteria_induk,
+            count(ka.id)
+          from kriteria_ahp ka
+          group by ka.id_kriteria_induk 
+        ) as kriteria_ahp_hitung
+          on kriteria_ahp_hitung.id_kriteria_induk = ka.id
+        left join (
+          select
+            ka.id_kriteria_induk,
+            count(pka.id)
+          from perbandingan_kriteria_ahp pka
+          inner join kriteria_ahp ka 
+            on ka.id = pka.id_kriteria_pertama 
+          group by ka.id_kriteria_induk
+        ) as perbandingan_kriteria_ahp_hitung
+          on perbandingan_kriteria_ahp_hitung.id_kriteria_induk = ka.id 
+        inner join (
+          select
+            va.id
+          from versi_ahp va 
+          order by va.id desc 
+          limit 1
+        ) versi_ahp on versi_ahp.id = ka.id_versi_ahp
+        order by ka.id desc
+      `,
+      { 
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+
+    if(daftarKriteriaBermasalah.length > 0) {
+      const daftarKriteriaBermasalahFilter = daftarKriteriaBermasalah.filter(kriteria => kriteria.terdapatError);
+
+      if(daftarKriteriaBermasalahFilter.length > 0) {
+        throw new Error('Ada kriteria yang belum diisi pada metode AHP');
+      }
     }
 
     await sesiRekrutmen.create({

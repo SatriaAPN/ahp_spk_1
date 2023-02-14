@@ -157,19 +157,6 @@ const {
   periksaApakahSemuaKriteriaTidakMemilikiError
 } = require('./functions');
 
-// app.use(function(req, res, next) {
-//   // cors origin
-//   res.header("Access-Control-Allow-Origin", "*");
-
-//   // cors header
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  
-//   // cors method
-//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-
-//   next();
-// });
-
 app.use(cors());
 
 app.use(express.json());
@@ -1952,7 +1939,7 @@ app.put('/pusat-kontrol-ahp/intensitas/perbandingan', async (req, res, next) => 
   }
 })
 
-app.get('/sesi-seleksi-programmer', async (req, res, next) => {
+app.get('/pusat-kontrol-sesi', async (req, res, next) => {
   try {
     const daftarSesiPerekrutan = await sequelize.query(
       `
@@ -2015,7 +2002,7 @@ app.get('/sesi-seleksi-programmer', async (req, res, next) => {
   }
 })
 
-app.post('/sesi-seleksi-programmer', async (req, res, next) => {
+app.post('/pusat-kontrol-sesi', async (req, res, next) => {
   try {
     const namaSesi = req.body.namaSesi;
 
@@ -2114,7 +2101,7 @@ app.post('/sesi-seleksi-programmer', async (req, res, next) => {
   }
 });
 
-app.delete('/sesi-seleksi-programmer/:id', async (req, res, next) => {
+app.delete('/pusat-kontrol-sesi/:id', async (req, res, next) => {
   try {
     const idSesi = req.params.id;
 
@@ -2143,7 +2130,7 @@ app.delete('/sesi-seleksi-programmer/:id', async (req, res, next) => {
   }
 });
 
-app.get('/sesi-seleksi-programmer/:id', async (req, res, next) => {
+app.get('/pusat-kontrol-sesi/:id', async (req, res, next) => {
   try {
     const idSesi = req.params.id;
     
@@ -2181,7 +2168,7 @@ app.get('/sesi-seleksi-programmer/:id', async (req, res, next) => {
   }
 })
 
-app.post('/sesi-seleksi-programmer/kandidat', async (req, res, next) => {
+app.post('/pusat-kontrol-sesi/kandidat', async (req, res, next) => {
   try {
     const {
       idSesi,
@@ -2258,7 +2245,7 @@ app.post('/sesi-seleksi-programmer/kandidat', async (req, res, next) => {
   }
 });
 
-app.delete('/sesi-seleksi-programmer/kandidat/:id', async (req, res, next) => {
+app.delete('/pusat-kontrol-sesi/kandidat/:id', async (req, res, next) => {
   try {
     const idKandidat = req.params.id;
 

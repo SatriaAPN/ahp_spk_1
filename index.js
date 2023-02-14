@@ -218,6 +218,7 @@ app.get('/kandidat-belum-dinilai/:idSeniorProgrammer', async (req, res) => {
           k.email,
           k.no_hp,
           k.id_sesi_rekrutmen,
+          sr.nama as "namaSesiRekrutmen",
           k.id_senior_programmer 
         from kandidat k 
         left join (
@@ -227,6 +228,8 @@ app.get('/kandidat-belum-dinilai/:idSeniorProgrammer', async (req, res) => {
           group by nk.id_kandidat
         ) penilaian 
           on penilaian.id_kandidat = k.id 
+        left join sesi_rekrutmen sr 
+          on sr.id = k.id_sesi_rekrutmen 
         where k.id_senior_programmer = :idSeniorProgrammer
           and penilaian.id_kandidat is null
         order by k.id 
@@ -262,6 +265,7 @@ app.get('/kandidat-sudah-dinilai/:idSeniorProgrammer', async (req, res) => {
           k.email,
           k.no_hp,
           k.id_sesi_rekrutmen,
+          sr.nama as "namaSesiRekrutmen",
           k.id_senior_programmer 
         from kandidat k 
         inner join (
@@ -271,6 +275,8 @@ app.get('/kandidat-sudah-dinilai/:idSeniorProgrammer', async (req, res) => {
           group by nk.id_kandidat
         ) penilaian 
           on penilaian.id_kandidat = k.id 
+        left join sesi_rekrutmen sr 
+          on sr.id = k.id_sesi_rekrutmen 
         where k.id_senior_programmer = :idSeniorProgrammer
         order by k.id 
       `,

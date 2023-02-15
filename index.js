@@ -386,7 +386,9 @@ app.get('/kandidat-belum-dinilai/daftar-intensitas-kriteria/:idKandidat', async 
           left join (
             select
               ika.id as "idIntensitas",
+              ika.id as value,
               ika.nama as "namaIntensitas",
+              ika.nama as label,
               ika.id_kriteria_ahp
             from intensitas_kriteria_ahp ika
             order by ika.id

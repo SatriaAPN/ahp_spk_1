@@ -259,27 +259,49 @@ app.get('/kandidat-sudah-dinilai/:idSeniorProgrammer', async (req, res) => {
 
     const daftarKandidat = await sequelize.query(
       `
+      select 
+        k.id,
+        k.nama,
+        k.email,
+        k.no_hp,
+        k.id_sesi_rekrutmen,
+        sr.nama as "namaSesiRekrutmen",
+        k.id_senior_programmer,
+        nilai_kandidat."dataNilaiKandidat" as "dataNilaiKandidat"
+      from kandidat k 
+      inner join (
+        select
+          nk.id_kandidat
+        from nilai_kandidat nk
+        group by nk.id_kandidat
+      ) penilaian 
+        on penilaian.id_kandidat = k.id 
+      left join sesi_rekrutmen sr 
+        on sr.id = k.id_sesi_rekrutmen 
+      left join (
         select 
           k.id,
-          k.nama,
-          k.email,
-          k.no_hp,
-          k.id_sesi_rekrutmen,
-          sr.nama as "namaSesiRekrutmen",
-          k.id_senior_programmer 
+          jsonb_agg(nilai_kandidat) as "dataNilaiKandidat"
         from kandidat k 
-        inner join (
+        left join (
           select
-            nk.id_kandidat
-          from nilai_kandidat nk
-          group by nk.id_kandidat
-        ) penilaian 
-          on penilaian.id_kandidat = k.id 
-        left join sesi_rekrutmen sr 
-          on sr.id = k.id_sesi_rekrutmen 
-        where k.id_senior_programmer = :idSeniorProgrammer
-        order by k.id 
-      `,
+            nk.id_kandidat,
+            ka.nama as "kriteria",
+            ika.nama as "intensitas"
+          from nilai_kandidat nk 
+          inner join intensitas_kriteria_ahp ika 
+            on ika.id = nk.id_intensitas_kriteria_ahp
+          inner join kriteria_ahp ka 
+            on ka.id = ika.id_kriteria_ahp
+          order by nk.id
+        ) nilai_kandidat 
+          on nilai_kandidat.id_kandidat = k.id 
+        group by k.id 
+      ) as nilai_kandidat
+        on nilai_kandidat.id = k.id
+      where k.id_senior_programmer = :idSeniorProgrammer
+      order by k.id 
+    `,
       { 
         type: sequelize.QueryTypes.SELECT,
         replacements: {
@@ -2142,17 +2164,46 @@ app.get('/pusat-kontrol-sesi/:id', async (req, res, next) => {
     
     let daftarKandidatSesi = await sequelize.query(
       `
-        select 
-          k.id,
-          k.nama,
-          k.email,
-          k.no_hp as "noHp",
-          k.rata_rata_nilai_ideal::numeric(4, 4) as "rataRataNilaiIdeal",
-          k.total_nilai_normal::numeric(4, 4) as "totalNilaiNormal",
-          rank() over (order by k.total_nilai_normal) as "rank" 
-        from kandidat k 
-        where k.id_sesi_rekrutmen = :idSesi
-        order by k.total_nilai_normal asc
+        select
+          a.*
+        from (
+          (
+            select
+              k.id,
+              k.nama,
+              k.email,
+              k.no_hp as "noHp",
+              k.rata_rata_nilai_ideal::numeric(4, 4) as "rataRataNilaiIdeal",
+              k.total_nilai_normal::numeric(4, 4) as "totalNilaiNormal",
+              case 
+                when k.total_nilai_normal is not null
+                  then dense_rank() over (order by k.total_nilai_normal desc)
+              end as "rank" ,
+              a.nama as "namaSeniorProgrammerPenilai"
+            from kandidat k
+            left join akun a 
+              on a.id = k.id_senior_programmer
+            where k.id_sesi_rekrutmen = :idSesi
+              and k.total_nilai_normal is not null
+            order by k.total_nilai_normal desc
+          ) union all (
+            select
+              k.id,
+              k.nama,
+              k.email,
+              k.no_hp as "noHp",
+              k.rata_rata_nilai_ideal::numeric(4, 4) as "rataRataNilaiIdeal",
+              k.total_nilai_normal::numeric(4, 4) as "totalNilaiNormal",
+              null as "rank" ,
+              a.nama as "namaSeniorProgrammerPenilai"
+            from kandidat k
+            left join akun a 
+              on a.id = k.id_senior_programmer
+            where k.id_sesi_rekrutmen = :idSesi
+              and k.total_nilai_normal is null
+            order by k.total_nilai_normal desc
+          )
+        ) a
       `, 
       { 
         type: sequelize.QueryTypes.SELECT, 
@@ -2277,6 +2328,33 @@ app.delete('/pusat-kontrol-sesi/kandidat/:id', async (req, res, next) => {
     });
   }
 });
+
+app.get('/pusat-kontrol-sesi/dropdown/senior-programmer', async (req, res, next) => {
+  try {
+    const seniorProgrammer = await akun.findAll({
+      where: {
+        jabatan: 'Senior Programmer'
+      },
+      attributes: [
+        'id',
+        'nama'
+      ]
+    });
+
+    res.status(200).send({
+      message: 'Berhasil mendapatkan daftar senior programmer',
+      data: {
+        seniorProgrammer
+      }
+    });
+  } catch(e) {
+    console.log(e)
+
+    res.status(400).send({
+      message: e.message
+    });
+  }
+})
 
 app.listen(port, async () => {
   try {

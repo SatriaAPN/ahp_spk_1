@@ -38,6 +38,13 @@ const createAkun = async (model) => {
     });
 
     await model.akun.create({
+      nama: 'Senior Programmer 2',
+      email: 'SeniorProgrammer2@gmail.com',
+      kata_sandi: 'admin',
+      jabatan: 'Senior Programmer'
+    });
+
+    await model.akun.create({
       nama: 'Chief Executive Officer',
       email: 'ChiefExecutiveOfficer@gmail.com',
       kata_sandi: 'admin',

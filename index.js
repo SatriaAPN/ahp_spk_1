@@ -1985,7 +1985,13 @@ app.get('/pusat-kontrol-sesi', async (req, res, next) => {
           case 
             when jumlah_kandidat_per_sesi.id_sesi_rekrutmen is null then true
             else false
-          end as "bolehDihapus"
+          end as "bolehDihapus",
+          case
+            when sr."status" = 'sedang berlangsung' 
+              and jumlah_kandidat_per_sesi.count = jumlah_kandidat_telah_dinilai_per_sesi.count 
+              then true
+            else false
+          end as "bolehDiselesaikan"
         from sesi_rekrutmen sr 
         left join (
           select

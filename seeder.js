@@ -2166,6 +2166,110 @@ const createSesiRekrutmen = async (model) => {
       }
     });
 
+    const sesiRekrutmen4 = await model.sesiRekrutmen.create({
+      nama: 'Sesi Rekrutmen 1',
+    });
+
+    const kandidat21 = await model.kandidat.create({
+      nama: 'Kandidat 21',
+      email: 'Kandidat21@mail.com',
+      no_hp: '08472382832',
+      id_sesi_rekrutmen: sesiRekrutmen4.id,
+      id_senior_programmer: 2
+    });
+
+    await createNilaiKandidat(kandidat21.id, model);
+
+    const kandidat22 = await model.kandidat.create({
+      nama: 'Kandidat 22',
+      email: 'Kandidat22@mail.com',
+      no_hp: '08472382832',
+      id_sesi_rekrutmen: sesiRekrutmen4.id,
+      id_senior_programmer: 2
+    });
+
+    await createNilaiKandidat(kandidat22.id, model);
+
+    const kandidat23 = await model.kandidat.create({
+      nama: 'Kandidat 23',
+      email: 'Kandidat23@mail.com',
+      no_hp: '08472382832',
+      id_sesi_rekrutmen: sesiRekrutmen4.id,
+      id_senior_programmer: 2
+    });
+
+    await createNilaiKandidat(kandidat23.id, model);
+
+    const kandidat24 = await model.kandidat.create({
+      nama: 'Kandidat 24',
+      email: 'Kandidat24@mail.com',
+      no_hp: '08472382832',
+      id_sesi_rekrutmen: sesiRekrutmen4.id,
+      id_senior_programmer: 2
+    });
+
+    await createNilaiKandidat(kandidat24.id, model);
+
+    const kandidat25 = await model.kandidat.create({
+      nama: 'Kandidat 25',
+      email: 'Kandidat25@mail.com',
+      no_hp: '08472382832',
+      id_sesi_rekrutmen: sesiRekrutmen4.id,
+      id_senior_programmer: 2
+    });
+
+    await createNilaiKandidat(kandidat25.id, model);
+
+    const kandidat26 = await model.kandidat.create({
+      nama: 'Kandidat 26',
+      email: 'Kandidat26@mail.com',
+      no_hp: '08472382832',
+      id_sesi_rekrutmen: sesiRekrutmen4.id,
+      id_senior_programmer: 2
+    });
+
+    await createNilaiKandidat(kandidat26.id, model);
+
+    const kandidat27 = await model.kandidat.create({
+      nama: 'Kandidat 27',
+      email: 'Kandidat27@mail.com',
+      no_hp: '08472382832',
+      id_sesi_rekrutmen: sesiRekrutmen4.id,
+      id_senior_programmer: 2
+    });
+
+    await createNilaiKandidat(kandidat27.id, model);
+
+    const kandidat28 = await model.kandidat.create({
+      nama: 'Kandidat 28',
+      email: 'Kandidat28@mail.com',
+      no_hp: '08472382832',
+      id_sesi_rekrutmen: sesiRekrutmen4.id,
+      id_senior_programmer: 2
+    });
+
+    await createNilaiKandidat(kandidat28.id, model);
+
+    const kandidat29 = await model.kandidat.create({
+      nama: 'Kandidat 29',
+      email: 'Kandidat29@mail.com',
+      no_hp: '08472382832',
+      id_sesi_rekrutmen: sesiRekrutmen4.id,
+      id_senior_programmer: 2
+    });
+
+    await createNilaiKandidat(kandidat29.id, model);
+
+    const kandidat30 = await model.kandidat.create({
+      nama: 'Kandidat 30',
+      email: 'Kandidat30@mail.com',
+      no_hp: '08472382832',
+      id_sesi_rekrutmen: sesiRekrutmen4.id,
+      id_senior_programmer: 2
+    });
+
+    await createNilaiKandidat(kandidat30.id, model);
+
     const sesiRekrutmen2 = await model.sesiRekrutmen.create({
       nama: 'Sesi Rekrutmen 2',
     });

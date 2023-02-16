@@ -259,49 +259,49 @@ app.get('/kandidat-sudah-dinilai/:idSeniorProgrammer', async (req, res) => {
 
     const daftarKandidat = await sequelize.query(
       `
-      select 
-        k.id,
-        k.nama,
-        k.email,
-        k.no_hp,
-        k.id_sesi_rekrutmen,
-        sr.nama as "namaSesiRekrutmen",
-        k.id_senior_programmer,
-        nilai_kandidat."dataNilaiKandidat" as "dataNilaiKandidat"
-      from kandidat k 
-      inner join (
-        select
-          nk.id_kandidat
-        from nilai_kandidat nk
-        group by nk.id_kandidat
-      ) penilaian 
-        on penilaian.id_kandidat = k.id 
-      left join sesi_rekrutmen sr 
-        on sr.id = k.id_sesi_rekrutmen 
-      left join (
         select 
           k.id,
-          jsonb_agg(nilai_kandidat) as "dataNilaiKandidat"
+          k.nama,
+          k.email,
+          k.no_hp,
+          k.id_sesi_rekrutmen,
+          sr.nama as "namaSesiRekrutmen",
+          k.id_senior_programmer,
+          nilai_kandidat."dataNilaiKandidat" as "dataNilaiKandidat"
         from kandidat k 
-        left join (
+        inner join (
           select
-            nk.id_kandidat,
-            ka.nama as "kriteria",
-            ika.nama as "intensitas"
-          from nilai_kandidat nk 
-          inner join intensitas_kriteria_ahp ika 
-            on ika.id = nk.id_intensitas_kriteria_ahp
-          inner join kriteria_ahp ka 
-            on ka.id = ika.id_kriteria_ahp
-          order by nk.id
-        ) nilai_kandidat 
-          on nilai_kandidat.id_kandidat = k.id 
-        group by k.id 
-      ) as nilai_kandidat
-        on nilai_kandidat.id = k.id
-      where k.id_senior_programmer = :idSeniorProgrammer
-      order by k.id 
-    `,
+            nk.id_kandidat
+          from nilai_kandidat nk
+          group by nk.id_kandidat
+        ) penilaian 
+          on penilaian.id_kandidat = k.id 
+        left join sesi_rekrutmen sr 
+          on sr.id = k.id_sesi_rekrutmen 
+        left join (
+          select 
+            k.id,
+            jsonb_agg(nilai_kandidat) as "dataNilaiKandidat"
+          from kandidat k 
+          left join (
+            select
+              nk.id_kandidat,
+              ka.nama as "kriteria",
+              ika.nama as "intensitas"
+            from nilai_kandidat nk 
+            inner join intensitas_kriteria_ahp ika 
+              on ika.id = nk.id_intensitas_kriteria_ahp
+            inner join kriteria_ahp ka 
+              on ka.id = ika.id_kriteria_ahp
+            order by nk.id
+          ) nilai_kandidat 
+            on nilai_kandidat.id_kandidat = k.id 
+          group by k.id 
+        ) as nilai_kandidat
+          on nilai_kandidat.id = k.id
+        where k.id_senior_programmer = :idSeniorProgrammer
+        order by k.id desc 
+      `,
       { 
         type: sequelize.QueryTypes.SELECT,
         replacements: {
@@ -437,7 +437,7 @@ app.post('/kandidat-belum-dinilai/nilai-kandidat/:idKandidat', async (req, res) 
       }
     }
 
-    let nilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(idKandidat);
+    let dataNilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(idKandidat);
 
     const dataKandidat = await kandidat.findOne({
       where: {
@@ -447,8 +447,8 @@ app.post('/kandidat-belum-dinilai/nilai-kandidat/:idKandidat', async (req, res) 
 
     // update data kandidat
     await dataKandidat.update({
-      rata_rata_nilai_ideal: nilaiKandidat.rataRataNilaiIdealKandidat,
-      total_nilai_normal: nilaiKandidat.totalNilaiNormalkandidat
+      rata_rata_nilai_ideal: dataNilaiKandidat.rataRataNilaiIdealKandidat,
+      total_nilai_normal: dataNilaiKandidat.totalNilaiNormalkandidat
     });
 
     res.status(200).send({
@@ -2157,6 +2157,36 @@ app.delete('/pusat-kontrol-sesi/:id', async (req, res, next) => {
 
     res.status(200).send({
       message: 'Berhasil menghapus sesi perekrutan'
+    });
+  } catch(e) {
+    console.log(e)
+    res.status(400).send({
+      message: e.message
+    });
+  }
+});
+
+app.get('/pusat-kontrol-sesi/update-status-sesi/:idSesi', async (req, res, next) => {
+  try {
+    const idSesi = req.params.idSesi;
+
+    const dataSesiRekrutmen = await sesiRekrutmen.findOne({
+      where: {
+        id: idSesi
+      }
+    });
+
+    if(!dataSesiRekrutmen) {
+      throw new Error('Sesi rekrutmen tidak ditemukan');
+    }
+
+    // update status
+    await dataSesiRekrutmen.update({
+      status: 'selesai'
+    });
+
+    res.status(200).send({
+      message: 'Berhasil update sesi perekrutan'
     });
   } catch(e) {
     console.log(e)

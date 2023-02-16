@@ -2167,7 +2167,7 @@ const createSesiRekrutmen = async (model) => {
     });
 
     const sesiRekrutmen4 = await model.sesiRekrutmen.create({
-      nama: 'Sesi Rekrutmen 1',
+      nama: 'Sesi Rekrutmen 2',
     });
 
     const kandidat21 = await model.kandidat.create({
@@ -2271,7 +2271,7 @@ const createSesiRekrutmen = async (model) => {
     await createNilaiKandidat(kandidat30.id, model);
 
     const sesiRekrutmen2 = await model.sesiRekrutmen.create({
-      nama: 'Sesi Rekrutmen 2',
+      nama: 'Sesi Rekrutmen 3',
     });
 
     const kandidat11 = await model.kandidat.create({
@@ -2365,7 +2365,7 @@ const createSesiRekrutmen = async (model) => {
     });
 
     const sesiRekrutmen3 = await model.sesiRekrutmen.create({
-      nama: 'Sesi Rekrutmen 3',
+      nama: 'Sesi Rekrutmen 4',
     });
   } catch(e) {
     throw e;

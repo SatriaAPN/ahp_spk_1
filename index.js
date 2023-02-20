@@ -2038,6 +2038,87 @@ app.get('/pusat-kontrol-sesi', async (req, res, next) => {
   }
 })
 
+app.get('/pusat-kontrol-sesi-ceo', async (req, res, next) => {
+  try {
+    const daftarSesiPerekrutan = await sequelize.query(
+      `
+        select
+          sr.id as "idSesi",
+          sr.nama as "namaSesi",
+          coalesce(jumlah_kandidat_per_sesi.count, 0) as "jumlahKandidat",
+          coalesce(jumlah_kandidat_telah_dinilai_per_sesi.count, 0) as "jumlahKandidatDinilai",
+          kandidat_terbaik.nama as "namaKandidatTerbaik",
+          case
+            when jumlah_kandidat_per_sesi.id_sesi_rekrutmen is null then 'belum dimulai'
+            else sr.status
+          end as "statusSesi",
+          case 
+            when jumlah_kandidat_per_sesi.id_sesi_rekrutmen is null then true
+            else false
+          end as "bolehDihapus",
+          case
+            when sr."status" = 'sedang berlangsung' 
+              and jumlah_kandidat_per_sesi.count = jumlah_kandidat_telah_dinilai_per_sesi.count 
+              then true
+            else false
+          end as "bolehDiselesaikan"
+        from sesi_rekrutmen sr 
+          left join (
+            select
+              k.id_sesi_rekrutmen,
+              count(k.id)
+            from kandidat k
+            group by k.id_sesi_rekrutmen
+          ) jumlah_kandidat_per_sesi 
+            on jumlah_kandidat_per_sesi.id_sesi_rekrutmen = sr.id
+          left join (
+            select
+              k.id_sesi_rekrutmen,
+              count(k.id)
+            from kandidat k
+            inner join (
+              select
+                k.id as id_kandidat,
+                count(nk.id)
+              from kandidat k 
+              inner join nilai_kandidat nk 
+                on nk.id_kandidat = k.id
+              group by k.id
+            ) kandidat_sudah_dinilai
+              on kandidat_sudah_dinilai.id_kandidat = k.id
+            group by k.id_sesi_rekrutmen
+          ) jumlah_kandidat_telah_dinilai_per_sesi
+            on jumlah_kandidat_telah_dinilai_per_sesi.id_sesi_rekrutmen = sr.id 
+          left join lateral (
+            select
+              k.nama
+            from kandidat k
+            where k.id_sesi_rekrutmen = sr.id
+            order by k.total_nilai_normal desc
+            limit 1
+          ) kandidat_terbaik on true
+        where sr."status" = 'selesai'
+        order by sr.id asc
+
+      `, 
+      { type: sequelize.QueryTypes.SELECT }
+    );
+
+    res.status(200).send({
+      message: 'Berhasil mendapatkan daftar sesi perekrutan',
+      data: {
+        daftarSesiPerekrutan
+      }
+    });
+  } catch(e) {
+    console.log(e)
+    res.status(400).send({
+      message: e.message
+    });
+  }
+})
+
+
 app.post('/pusat-kontrol-sesi', async (req, res, next) => {
   try {
     const namaSesi = req.body.namaSesi;

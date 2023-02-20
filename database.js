@@ -8,7 +8,13 @@ const databaseUrl = process.env.DATABASE_URL || `postgres://${user}:${password}@
 // Option 1: Passing a connection URI
 const sequelize = new Sequelize(databaseUrl,
 {
-  logging: false
+  logging: false,
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  }
 }) // Example for postgres
 
 const akun = sequelize.define('akun', {

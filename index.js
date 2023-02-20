@@ -2565,6 +2565,8 @@ app.listen(port, async () => {
     }
 
     await seeder(model);
+    console.log('all seeder has been executed');
+
 
     console.log(`app start listening on port ${port}!`)
   } catch (error) {

@@ -538,7 +538,7 @@ const mendapatkanBobotKriteria = async (idKriteriaInduk) => {
 const mendapatkanBobotMatriksPerbandingan = async (matriksPerbandingan) => {
   try {
     let matriks = matriksPerbandingan;
-    
+
     let matriks2 = Array.from(matriks);
     
     let randomConsistencyIndex = {
@@ -630,6 +630,7 @@ const mendapatkanBobotMatriksPerbandingan = async (matriksPerbandingan) => {
             allEigenValueCorrect = true;
           } else {
             allEigenValueCorrect = false;
+            break;
           }
         }
        

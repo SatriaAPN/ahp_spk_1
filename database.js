@@ -339,7 +339,7 @@ const dapatkanNamaNilai = (nilai) => {
       case 9:
         return 'Mutlak sangat penting dari';
       case 8:
-        return 'Mendekati mutlak dari';
+        return 'Mendekati mutlak sangat penting dari';
       case 7:
         return 'Sangat penting dari';
       case 6:

@@ -680,7 +680,7 @@ const createAhp = async (model) => {
     await model.perbandinganKriteriaAhp.create({
       id_kriteria_pertama: kemampuanPostgreSql.id,
       id_kriteria_kedua: kemampuanMongoDb.id,
-      nilai: 7
+      nilai: 6
     });
 
     // start
@@ -688,7 +688,7 @@ const createAhp = async (model) => {
     await model.perbandinganKriteriaAhp.create({
       id_kriteria_pertama: kemampuanMongoDb.id,
       id_kriteria_kedua: kemampuanPostgreSql.id,
-      nilai: 1/7
+      nilai: 1/6
     });
 
     await model.perbandinganKriteriaAhp.create({
@@ -2065,7 +2065,77 @@ const createSesiRekrutmen = async (model) => {
       id_senior_programmer: 2
     });
 
-    await createNilaiKandidat(kandidat1.id, model);
+    // Pengalaman Sebagai Programmer (Tahun)
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat1.id,
+      id_intensitas_kriteria_ahp: 3
+    });
+
+    // Javascript
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat1.id,
+      id_intensitas_kriteria_ahp: 8
+    });
+
+    // HTML
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat1.id,
+      id_intensitas_kriteria_ahp: 12
+    });
+
+    // CSS
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat1.id,
+      id_intensitas_kriteria_ahp: 17
+    });
+
+    // SQL
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat1.id,
+      id_intensitas_kriteria_ahp: 24
+    });
+
+    // PostgreSQL
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat1.id,
+      id_intensitas_kriteria_ahp: 27
+    });
+
+    // MongoDB
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat1.id,
+      id_intensitas_kriteria_ahp: 32
+    });
+
+    // Monolith
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat1.id,
+      id_intensitas_kriteria_ahp: 37
+    });
+
+    // Microservices
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat1.id,
+      id_intensitas_kriteria_ahp: 39
+    });
+
+    // Problem Solving
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat1.id,
+      id_intensitas_kriteria_ahp: 44
+    });
+
+    let nilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(kandidat1.id);
+
+    // update data kandidat
+    await model.kandidat.update({
+      rata_rata_nilai_ideal: nilaiKandidat.rataRataNilaiIdealKandidat,
+      total_nilai_normal: nilaiKandidat.totalNilaiNormalkandidat
+    }, {
+      where: {
+        id: kandidat1.id
+      }
+    });
 
     const kandidat2 = await model.kandidat.create({
       nama: 'Kandidat 2',
@@ -2075,7 +2145,121 @@ const createSesiRekrutmen = async (model) => {
       id_senior_programmer: 2
     });
 
-    await createNilaiKandidat(kandidat2.id, model);
+    // Pengalaman Sebagai Programmer (Tahun)
+    // 1 •	0 sampai 1 tahun
+    // 2 •	1 sampai 3 tahun
+    // 3 •	3 sampai 5 tahun
+    // 4 •	5 tahun keatas
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat2.id,
+      id_intensitas_kriteria_ahp: 1
+    });
+    
+    // Javascript
+    // 5 •	Kode tidak berjalan
+    // 6 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 7 •	Kode berjalan dan sesuai ekspektasi
+    // 8 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 9 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat2.id,
+      id_intensitas_kriteria_ahp: 7
+    });
+    
+    // HTML
+    // 10 •	Kode tidak berjalan
+    // 11 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 12 •	Kode berjalan dan sesuai ekspektasi
+    // 13 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 14 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat2.id,
+      id_intensitas_kriteria_ahp: 12
+    });
+    
+    // CSS
+    // 15 •	Kode tidak berjalan
+    // 16 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 17 •	Kode berjalan dan sesuai ekspektasi
+    // 18 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 19 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat2.id,
+      id_intensitas_kriteria_ahp: 17
+    });
+    
+    // SQL
+    // 20 •	Kode tidak berjalan
+    // 21 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 22 •	Kode berjalan dan sesuai ekspektasi
+    // 23 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 24 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat2.id,
+      id_intensitas_kriteria_ahp: 22
+    });
+    
+    // PostgreSQL
+    // 25 •	Kode tidak berjalan
+    // 26 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 27 •	Kode berjalan dan sesuai ekspektasi
+    // 28 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 29 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat2.id,
+      id_intensitas_kriteria_ahp: 27
+    });
+    
+    // MongoDB
+    // 30 •	Kode tidak berjalan
+    // 31 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 32 •	Kode berjalan dan sesuai ekspektasi
+    // 33 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 34 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat2.id,
+      id_intensitas_kriteria_ahp: 32
+    });
+    
+    // Monolith
+    // 35 •	Tidak memahami
+    // 36 •	Memahami
+    // 37 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat2.id,
+      id_intensitas_kriteria_ahp: 36
+    });
+    
+    // Microservices
+    // 38 •	Tidak memahami
+    // 39 •	Memahami
+    // 40 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat2.id,
+      id_intensitas_kriteria_ahp: 39
+    });
+    
+    // Problem Solving
+    // 41 •	Tidak memahami masalah
+    // 42 •	Memahami masalah
+    // 43 •	Memahami masalah dan dapat menjelaskan dengan baik
+    // 44 •	Memahami, dapat menjelaskan dengan baik, dan dapat memberikan solusi
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat2.id,
+      id_intensitas_kriteria_ahp: 43
+    });
+
+    nilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(kandidat2.id);
+
+    // update data kandidat
+    await model.kandidat.update({
+      rata_rata_nilai_ideal: nilaiKandidat.rataRataNilaiIdealKandidat,
+      total_nilai_normal: nilaiKandidat.totalNilaiNormalkandidat
+    }, {
+      where: {
+        id: kandidat2.id
+      }
+    });
 
     const kandidat3 = await model.kandidat.create({
       nama: 'Kandidat 3',
@@ -2085,7 +2269,121 @@ const createSesiRekrutmen = async (model) => {
       id_senior_programmer: 2
     });
 
-    await createNilaiKandidat(kandidat3.id, model);
+    // Pengalaman Sebagai Programmer (Tahun)
+    // 1 •	0 sampai 1 tahun
+    // 2 •	1 sampai 3 tahun
+    // 3 •	3 sampai 5 tahun
+    // 4 •	5 tahun keatas
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat3.id,
+      id_intensitas_kriteria_ahp: 2
+    });
+    
+    // Javascript
+    // 5 •	Kode tidak berjalan
+    // 6 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 7 •	Kode berjalan dan sesuai ekspektasi
+    // 8 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 9 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat3.id,
+      id_intensitas_kriteria_ahp: 9
+    });
+    
+    // HTML
+    // 10 •	Kode tidak berjalan
+    // 11 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 12 •	Kode berjalan dan sesuai ekspektasi
+    // 13 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 14 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat3.id,
+      id_intensitas_kriteria_ahp: 13
+    });
+    
+    // CSS
+    // 15 •	Kode tidak berjalan
+    // 16 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 17 •	Kode berjalan dan sesuai ekspektasi
+    // 18 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 19 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat3.id,
+      id_intensitas_kriteria_ahp: 17
+    });
+    
+    // SQL
+    // 20 •	Kode tidak berjalan
+    // 21 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 22 •	Kode berjalan dan sesuai ekspektasi
+    // 23 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 24 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat3.id,
+      id_intensitas_kriteria_ahp: 24
+    });
+    
+    // PostgreSQL
+    // 25 •	Kode tidak berjalan
+    // 26 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 27 •	Kode berjalan dan sesuai ekspektasi
+    // 28 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 29 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat3.id,
+      id_intensitas_kriteria_ahp: 28
+    });
+    
+    // MongoDB
+    // 30 •	Kode tidak berjalan
+    // 31 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 32 •	Kode berjalan dan sesuai ekspektasi
+    // 33 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 34 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat3.id,
+      id_intensitas_kriteria_ahp: 33
+    });
+    
+    // Monolith
+    // 35 •	Tidak memahami
+    // 36 •	Memahami
+    // 37 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat3.id,
+      id_intensitas_kriteria_ahp: 37
+    });
+    
+    // Microservices
+    // 38 •	Tidak memahami
+    // 39 •	Memahami
+    // 40 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat3.id,
+      id_intensitas_kriteria_ahp: 39
+    });
+    
+    // Problem Solving
+    // 41 •	Tidak memahami masalah
+    // 42 •	Memahami masalah
+    // 43 •	Memahami masalah dan dapat menjelaskan dengan baik
+    // 44 •	Memahami, dapat menjelaskan dengan baik, dan dapat memberikan solusi
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat3.id,
+      id_intensitas_kriteria_ahp: 43
+    });
+
+    nilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(kandidat3.id);
+
+    // update data kandidat
+    await model.kandidat.update({
+      rata_rata_nilai_ideal: nilaiKandidat.rataRataNilaiIdealKandidat,
+      total_nilai_normal: nilaiKandidat.totalNilaiNormalkandidat
+    }, {
+      where: {
+        id: kandidat3.id
+      }
+    });
 
     const kandidat4 = await model.kandidat.create({
       nama: 'Kandidat 4',
@@ -2095,7 +2393,121 @@ const createSesiRekrutmen = async (model) => {
       id_senior_programmer: 2
     });
 
-    await createNilaiKandidat(kandidat4.id, model);
+    // Pengalaman Sebagai Programmer (Tahun)
+    // 1 •	0 sampai 1 tahun
+    // 2 •	1 sampai 3 tahun
+    // 3 •	3 sampai 5 tahun
+    // 4 •	5 tahun keatas
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat4.id,
+      id_intensitas_kriteria_ahp: 4
+    });
+    
+    // Javascript
+    // 5 •	Kode tidak berjalan
+    // 6 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 7 •	Kode berjalan dan sesuai ekspektasi
+    // 8 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 9 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat4.id,
+      id_intensitas_kriteria_ahp: 9
+    });
+    
+    // HTML
+    // 10 •	Kode tidak berjalan
+    // 11 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 12 •	Kode berjalan dan sesuai ekspektasi
+    // 13 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 14 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat4.id,
+      id_intensitas_kriteria_ahp: 12
+    });
+    
+    // CSS
+    // 15 •	Kode tidak berjalan
+    // 16 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 17 •	Kode berjalan dan sesuai ekspektasi
+    // 18 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 19 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat4.id,
+      id_intensitas_kriteria_ahp: 17
+    });
+    
+    // SQL
+    // 20 •	Kode tidak berjalan
+    // 21 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 22 •	Kode berjalan dan sesuai ekspektasi
+    // 23 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 24 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat4.id,
+      id_intensitas_kriteria_ahp: 24
+    });
+    
+    // PostgreSQL
+    // 25 •	Kode tidak berjalan
+    // 26 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 27 •	Kode berjalan dan sesuai ekspektasi
+    // 28 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 29 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat4.id,
+      id_intensitas_kriteria_ahp: 28
+    });
+    
+    // MongoDB
+    // 30 •	Kode tidak berjalan
+    // 31 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 32 •	Kode berjalan dan sesuai ekspektasi
+    // 33 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 34 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat4.id,
+      id_intensitas_kriteria_ahp: 32
+    });
+    
+    // Monolith
+    // 35 •	Tidak memahami
+    // 36 •	Memahami
+    // 37 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat4.id,
+      id_intensitas_kriteria_ahp: 37
+    });
+    
+    // Microservices
+    // 38 •	Tidak memahami
+    // 39 •	Memahami
+    // 40 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat4.id,
+      id_intensitas_kriteria_ahp: 40
+    });
+    
+    // Problem Solving
+    // 41 •	Tidak memahami masalah
+    // 42 •	Memahami masalah
+    // 43 •	Memahami masalah dan dapat menjelaskan dengan baik
+    // 44 •	Memahami, dapat menjelaskan dengan baik, dan dapat memberikan solusi
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat4.id,
+      id_intensitas_kriteria_ahp: 44
+    });
+
+    nilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(kandidat4.id);
+
+    // update data kandidat
+    await model.kandidat.update({
+      rata_rata_nilai_ideal: nilaiKandidat.rataRataNilaiIdealKandidat,
+      total_nilai_normal: nilaiKandidat.totalNilaiNormalkandidat
+    }, {
+      where: {
+        id: kandidat4.id
+      }
+    });
 
     const kandidat5 = await model.kandidat.create({
       nama: 'Kandidat 5',
@@ -2105,7 +2517,121 @@ const createSesiRekrutmen = async (model) => {
       id_senior_programmer: 2
     });
 
-    await createNilaiKandidat(kandidat5.id, model);
+    // Pengalaman Sebagai Programmer (Tahun)
+    // 1 •	0 sampai 1 tahun
+    // 2 •	1 sampai 3 tahun
+    // 3 •	3 sampai 5 tahun
+    // 4 •	5 tahun keatas
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat5.id,
+      id_intensitas_kriteria_ahp: 2
+    });
+    
+    // Javascript
+    // 5 •	Kode tidak berjalan
+    // 6 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 7 •	Kode berjalan dan sesuai ekspektasi
+    // 8 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 9 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat5.id,
+      id_intensitas_kriteria_ahp: 7
+    });
+    
+    // HTML
+    // 10 •	Kode tidak berjalan
+    // 11 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 12 •	Kode berjalan dan sesuai ekspektasi
+    // 13 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 14 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat5.id,
+      id_intensitas_kriteria_ahp: 12
+    });
+    
+    // CSS
+    // 15 •	Kode tidak berjalan
+    // 16 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 17 •	Kode berjalan dan sesuai ekspektasi
+    // 18 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 19 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat5.id,
+      id_intensitas_kriteria_ahp: 17
+    });
+    
+    // SQL
+    // 20 •	Kode tidak berjalan
+    // 21 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 22 •	Kode berjalan dan sesuai ekspektasi
+    // 23 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 24 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat5.id,
+      id_intensitas_kriteria_ahp: 22
+    });
+    
+    // PostgreSQL
+    // 25 •	Kode tidak berjalan
+    // 26 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 27 •	Kode berjalan dan sesuai ekspektasi
+    // 28 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 29 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat5.id,
+      id_intensitas_kriteria_ahp: 27
+    });
+    
+    // MongoDB
+    // 30 •	Kode tidak berjalan
+    // 31 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 32 •	Kode berjalan dan sesuai ekspektasi
+    // 33 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 34 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat5.id,
+      id_intensitas_kriteria_ahp: 32
+    });
+    
+    // Monolith
+    // 35 •	Tidak memahami
+    // 36 •	Memahami
+    // 37 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat5.id,
+      id_intensitas_kriteria_ahp: 37
+    });
+    
+    // Microservices
+    // 38 •	Tidak memahami
+    // 39 •	Memahami
+    // 40 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat5.id,
+      id_intensitas_kriteria_ahp: 39
+    });
+    
+    // Problem Solving
+    // 41 •	Tidak memahami masalah
+    // 42 •	Memahami masalah
+    // 43 •	Memahami masalah dan dapat menjelaskan dengan baik
+    // 44 •	Memahami, dapat menjelaskan dengan baik, dan dapat memberikan solusi
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat5.id,
+      id_intensitas_kriteria_ahp: 43
+    });
+
+    nilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(kandidat5.id);
+
+    // update data kandidat
+    await model.kandidat.update({
+      rata_rata_nilai_ideal: nilaiKandidat.rataRataNilaiIdealKandidat,
+      total_nilai_normal: nilaiKandidat.totalNilaiNormalkandidat
+    }, {
+      where: {
+        id: kandidat5.id
+      }
+    });
 
     const kandidat6 = await model.kandidat.create({
       nama: 'Kandidat 6',
@@ -2115,7 +2641,121 @@ const createSesiRekrutmen = async (model) => {
       id_senior_programmer: 2
     });
 
-    await createNilaiKandidat(kandidat6.id, model);
+    // Pengalaman Sebagai Programmer (Tahun)
+    // 1 •	0 sampai 1 tahun
+    // 2 •	1 sampai 3 tahun
+    // 3 •	3 sampai 5 tahun
+    // 4 •	5 tahun keatas
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat6.id,
+      id_intensitas_kriteria_ahp: 3
+    });
+    
+    // Javascript
+    // 5 •	Kode tidak berjalan
+    // 6 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 7 •	Kode berjalan dan sesuai ekspektasi
+    // 8 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 9 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat6.id,
+      id_intensitas_kriteria_ahp: 9
+    });
+    
+    // HTML
+    // 10 •	Kode tidak berjalan
+    // 11 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 12 •	Kode berjalan dan sesuai ekspektasi
+    // 13 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 14 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat6.id,
+      id_intensitas_kriteria_ahp: 12
+    });
+    
+    // CSS
+    // 15 •	Kode tidak berjalan
+    // 16 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 17 •	Kode berjalan dan sesuai ekspektasi
+    // 18 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 19 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat6.id,
+      id_intensitas_kriteria_ahp: 18
+    });
+    
+    // SQL
+    // 20 •	Kode tidak berjalan
+    // 21 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 22 •	Kode berjalan dan sesuai ekspektasi
+    // 23 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 24 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat6.id,
+      id_intensitas_kriteria_ahp: 23
+    });
+    
+    // PostgreSQL
+    // 25 •	Kode tidak berjalan
+    // 26 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 27 •	Kode berjalan dan sesuai ekspektasi
+    // 28 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 29 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat6.id,
+      id_intensitas_kriteria_ahp: 29
+    });
+    
+    // MongoDB
+    // 30 •	Kode tidak berjalan
+    // 31 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 32 •	Kode berjalan dan sesuai ekspektasi
+    // 33 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 34 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat6.id,
+      id_intensitas_kriteria_ahp: 32
+    });
+    
+    // Monolith
+    // 35 •	Tidak memahami
+    // 36 •	Memahami
+    // 37 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat6.id,
+      id_intensitas_kriteria_ahp: 37
+    });
+    
+    // Microservices
+    // 38 •	Tidak memahami
+    // 39 •	Memahami
+    // 40 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat6.id,
+      id_intensitas_kriteria_ahp: 40
+    });
+    
+    // Problem Solving
+    // 41 •	Tidak memahami masalah
+    // 42 •	Memahami masalah
+    // 43 •	Memahami masalah dan dapat menjelaskan dengan baik
+    // 44 •	Memahami, dapat menjelaskan dengan baik, dan dapat memberikan solusi
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat6.id,
+      id_intensitas_kriteria_ahp: 43
+    });
+
+    nilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(kandidat6.id);
+
+    // update data kandidat
+    await model.kandidat.update({
+      rata_rata_nilai_ideal: nilaiKandidat.rataRataNilaiIdealKandidat,
+      total_nilai_normal: nilaiKandidat.totalNilaiNormalkandidat
+    }, {
+      where: {
+        id: kandidat6.id
+      }
+    });
 
     const kandidat7 = await model.kandidat.create({
       nama: 'Kandidat 7',
@@ -2125,7 +2765,121 @@ const createSesiRekrutmen = async (model) => {
       id_senior_programmer: 2
     });
 
-    await createNilaiKandidat(kandidat7.id, model);
+    // Pengalaman Sebagai Programmer (Tahun)
+    // 1 •	0 sampai 1 tahun
+    // 2 •	1 sampai 3 tahun
+    // 3 •	3 sampai 5 tahun
+    // 4 •	5 tahun keatas
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat7.id,
+      id_intensitas_kriteria_ahp: 4
+    });
+    
+    // Javascript
+    // 5 •	Kode tidak berjalan
+    // 6 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 7 •	Kode berjalan dan sesuai ekspektasi
+    // 8 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 9 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat7.id,
+      id_intensitas_kriteria_ahp: 7
+    });
+    
+    // HTML
+    // 10 •	Kode tidak berjalan
+    // 11 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 12 •	Kode berjalan dan sesuai ekspektasi
+    // 13 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 14 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat7.id,
+      id_intensitas_kriteria_ahp: 12
+    });
+    
+    // CSS
+    // 15 •	Kode tidak berjalan
+    // 16 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 17 •	Kode berjalan dan sesuai ekspektasi
+    // 18 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 19 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat7.id,
+      id_intensitas_kriteria_ahp: 17
+    });
+    
+    // SQL
+    // 20 •	Kode tidak berjalan
+    // 21 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 22 •	Kode berjalan dan sesuai ekspektasi
+    // 23 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 24 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat7.id,
+      id_intensitas_kriteria_ahp: 23
+    });
+    
+    // PostgreSQL
+    // 25 •	Kode tidak berjalan
+    // 26 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 27 •	Kode berjalan dan sesuai ekspektasi
+    // 28 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 29 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat7.id,
+      id_intensitas_kriteria_ahp: 28
+    });
+    
+    // MongoDB
+    // 30 •	Kode tidak berjalan
+    // 31 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 32 •	Kode berjalan dan sesuai ekspektasi
+    // 33 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 34 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat7.id,
+      id_intensitas_kriteria_ahp: 32
+    });
+    
+    // Monolith
+    // 35 •	Tidak memahami
+    // 36 •	Memahami
+    // 37 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat7.id,
+      id_intensitas_kriteria_ahp: 37
+    });
+    
+    // Microservices
+    // 38 •	Tidak memahami
+    // 39 •	Memahami
+    // 40 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat7.id,
+      id_intensitas_kriteria_ahp: 39
+    });
+    
+    // Problem Solving
+    // 41 •	Tidak memahami masalah
+    // 42 •	Memahami masalah
+    // 43 •	Memahami masalah dan dapat menjelaskan dengan baik
+    // 44 •	Memahami, dapat menjelaskan dengan baik, dan dapat memberikan solusi
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat7.id,
+      id_intensitas_kriteria_ahp: 43
+    });
+
+    nilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(kandidat7.id);
+
+    // update data kandidat
+    await model.kandidat.update({
+      rata_rata_nilai_ideal: nilaiKandidat.rataRataNilaiIdealKandidat,
+      total_nilai_normal: nilaiKandidat.totalNilaiNormalkandidat
+    }, {
+      where: {
+        id: kandidat7.id
+      }
+    });
 
     const kandidat8 = await model.kandidat.create({
       nama: 'Kandidat 8',
@@ -2135,7 +2889,121 @@ const createSesiRekrutmen = async (model) => {
       id_senior_programmer: 2
     });
 
-    await createNilaiKandidat(kandidat8.id, model);
+    // Pengalaman Sebagai Programmer (Tahun)
+    // 1 •	0 sampai 1 tahun
+    // 2 •	1 sampai 3 tahun
+    // 3 •	3 sampai 5 tahun
+    // 4 •	5 tahun keatas
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat8.id,
+      id_intensitas_kriteria_ahp: 2
+    });
+    
+    // Javascript
+    // 5 •	Kode tidak berjalan
+    // 6 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 7 •	Kode berjalan dan sesuai ekspektasi
+    // 8 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 9 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat8.id,
+      id_intensitas_kriteria_ahp: 7
+    });
+    
+    // HTML
+    // 10 •	Kode tidak berjalan
+    // 11 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 12 •	Kode berjalan dan sesuai ekspektasi
+    // 13 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 14 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat8.id,
+      id_intensitas_kriteria_ahp: 13
+    });
+    
+    // CSS
+    // 15 •	Kode tidak berjalan
+    // 16 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 17 •	Kode berjalan dan sesuai ekspektasi
+    // 18 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 19 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat8.id,
+      id_intensitas_kriteria_ahp: 17
+    });
+    
+    // SQL
+    // 20 •	Kode tidak berjalan
+    // 21 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 22 •	Kode berjalan dan sesuai ekspektasi
+    // 23 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 24 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat8.id,
+      id_intensitas_kriteria_ahp: 23
+    });
+    
+    // PostgreSQL
+    // 25 •	Kode tidak berjalan
+    // 26 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 27 •	Kode berjalan dan sesuai ekspektasi
+    // 28 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 29 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat8.id,
+      id_intensitas_kriteria_ahp: 27
+    });
+    
+    // MongoDB
+    // 30 •	Kode tidak berjalan
+    // 31 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 32 •	Kode berjalan dan sesuai ekspektasi
+    // 33 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 34 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat8.id,
+      id_intensitas_kriteria_ahp: 32
+    });
+    
+    // Monolith
+    // 35 •	Tidak memahami
+    // 36 •	Memahami
+    // 37 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat8.id,
+      id_intensitas_kriteria_ahp: 37
+    });
+    
+    // Microservices
+    // 38 •	Tidak memahami
+    // 39 •	Memahami
+    // 40 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat8.id,
+      id_intensitas_kriteria_ahp: 40
+    });
+    
+    // Problem Solving
+    // 41 •	Tidak memahami masalah
+    // 42 •	Memahami masalah
+    // 43 •	Memahami masalah dan dapat menjelaskan dengan baik
+    // 44 •	Memahami, dapat menjelaskan dengan baik, dan dapat memberikan solusi
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat8.id,
+      id_intensitas_kriteria_ahp: 43
+    });
+
+    nilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(kandidat8.id);
+
+    // update data kandidat
+    await model.kandidat.update({
+      rata_rata_nilai_ideal: nilaiKandidat.rataRataNilaiIdealKandidat,
+      total_nilai_normal: nilaiKandidat.totalNilaiNormalkandidat
+    }, {
+      where: {
+        id: kandidat8.id
+      }
+    });
 
     const kandidat9 = await model.kandidat.create({
       nama: 'Kandidat 9',
@@ -2145,7 +3013,121 @@ const createSesiRekrutmen = async (model) => {
       id_senior_programmer: 2
     });
 
-    await createNilaiKandidat(kandidat9.id, model);
+    // Pengalaman Sebagai Programmer (Tahun)
+    // 1 •	0 sampai 1 tahun
+    // 2 •	1 sampai 3 tahun
+    // 3 •	3 sampai 5 tahun
+    // 4 •	5 tahun keatas
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat9.id,
+      id_intensitas_kriteria_ahp: 3
+    });
+    
+    // Javascript
+    // 5 •	Kode tidak berjalan
+    // 6 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 7 •	Kode berjalan dan sesuai ekspektasi
+    // 8 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 9 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat9.id,
+      id_intensitas_kriteria_ahp: 9
+    });
+    
+    // HTML
+    // 10 •	Kode tidak berjalan
+    // 11 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 12 •	Kode berjalan dan sesuai ekspektasi
+    // 13 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 14 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat9.id,
+      id_intensitas_kriteria_ahp: 12
+    });
+    
+    // CSS
+    // 15 •	Kode tidak berjalan
+    // 16 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 17 •	Kode berjalan dan sesuai ekspektasi
+    // 18 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 19 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat9.id,
+      id_intensitas_kriteria_ahp: 17
+    });
+    
+    // SQL
+    // 20 •	Kode tidak berjalan
+    // 21 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 22 •	Kode berjalan dan sesuai ekspektasi
+    // 23 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 24 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat9.id,
+      id_intensitas_kriteria_ahp: 22
+    });
+    
+    // PostgreSQL
+    // 25 •	Kode tidak berjalan
+    // 26 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 27 •	Kode berjalan dan sesuai ekspektasi
+    // 28 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 29 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat9.id,
+      id_intensitas_kriteria_ahp: 27
+    });
+    
+    // MongoDB
+    // 30 •	Kode tidak berjalan
+    // 31 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 32 •	Kode berjalan dan sesuai ekspektasi
+    // 33 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 34 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat9.id,
+      id_intensitas_kriteria_ahp: 32
+    });
+    
+    // Monolith
+    // 35 •	Tidak memahami
+    // 36 •	Memahami
+    // 37 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat9.id,
+      id_intensitas_kriteria_ahp: 37
+    });
+    
+    // Microservices
+    // 38 •	Tidak memahami
+    // 39 •	Memahami
+    // 40 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat9.id,
+      id_intensitas_kriteria_ahp: 39
+    });
+    
+    // Problem Solving
+    // 41 •	Tidak memahami masalah
+    // 42 •	Memahami masalah
+    // 43 •	Memahami masalah dan dapat menjelaskan dengan baik
+    // 44 •	Memahami, dapat menjelaskan dengan baik, dan dapat memberikan solusi
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat9.id,
+      id_intensitas_kriteria_ahp: 44
+    });
+
+    nilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(kandidat9.id);
+
+    // update data kandidat
+    await model.kandidat.update({
+      rata_rata_nilai_ideal: nilaiKandidat.rataRataNilaiIdealKandidat,
+      total_nilai_normal: nilaiKandidat.totalNilaiNormalkandidat
+    }, {
+      where: {
+        id: kandidat9.id
+      }
+    });
 
     const kandidat10 = await model.kandidat.create({
       nama: 'Kandidat 10',
@@ -2155,7 +3137,121 @@ const createSesiRekrutmen = async (model) => {
       id_senior_programmer: 2
     });
 
-    await createNilaiKandidat(kandidat10.id, model);
+    // Pengalaman Sebagai Programmer (Tahun)
+    // 1 •	0 sampai 1 tahun
+    // 2 •	1 sampai 3 tahun
+    // 3 •	3 sampai 5 tahun
+    // 4 •	5 tahun keatas
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat10.id,
+      id_intensitas_kriteria_ahp: 1
+    });
+    
+    // Javascript
+    // 5 •	Kode tidak berjalan
+    // 6 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 7 •	Kode berjalan dan sesuai ekspektasi
+    // 8 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 9 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat10.id,
+      id_intensitas_kriteria_ahp: 6
+    });
+    
+    // HTML
+    // 10 •	Kode tidak berjalan
+    // 11 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 12 •	Kode berjalan dan sesuai ekspektasi
+    // 13 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 14 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat10.id,
+      id_intensitas_kriteria_ahp: 12
+    });
+    
+    // CSS
+    // 15 •	Kode tidak berjalan
+    // 16 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 17 •	Kode berjalan dan sesuai ekspektasi
+    // 18 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 19 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat10.id,
+      id_intensitas_kriteria_ahp: 17
+    });
+    
+    // SQL
+    // 20 •	Kode tidak berjalan
+    // 21 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 22 •	Kode berjalan dan sesuai ekspektasi
+    // 23 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 24 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat10.id,
+      id_intensitas_kriteria_ahp: 21
+    });
+    
+    // PostgreSQL
+    // 25 •	Kode tidak berjalan
+    // 26 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 27 •	Kode berjalan dan sesuai ekspektasi
+    // 28 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 29 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat10.id,
+      id_intensitas_kriteria_ahp: 27
+    });
+    
+    // MongoDB
+    // 30 •	Kode tidak berjalan
+    // 31 •	Kode berjalan tapi tidak sesuai ekspektasi
+    // 32 •	Kode berjalan dan sesuai ekspektasi
+    // 33 •	Kode berjalan, sesuai ekspektasi dan memiliki dokumen
+    // 34 •	Kode berjalan, sesuai ekspektasi, memiliki dokumen dan mempunyai test automatis
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat10.id,
+      id_intensitas_kriteria_ahp: 32
+    });
+    
+    // Monolith
+    // 35 •	Tidak memahami
+    // 36 •	Memahami
+    // 37 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat10.id,
+      id_intensitas_kriteria_ahp: 36
+    });
+    
+    // Microservices
+    // 38 •	Tidak memahami
+    // 39 •	Memahami
+    // 40 •	Memahami dan memiliki pengalaman
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat10.id,
+      id_intensitas_kriteria_ahp: 39
+    });
+    
+    // Problem Solving
+    // 41 •	Tidak memahami masalah
+    // 42 •	Memahami masalah
+    // 43 •	Memahami masalah dan dapat menjelaskan dengan baik
+    // 44 •	Memahami, dapat menjelaskan dengan baik, dan dapat memberikan solusi
+    await model.nilaiKandidat.create({
+      id_kandidat: kandidat10.id,
+      id_intensitas_kriteria_ahp: 43
+    });
+
+    nilaiKandidat = await mendapatkanNilaiIdealDanNormalKandidat(kandidat10.id);
+
+    // update data kandidat
+    await model.kandidat.update({
+      rata_rata_nilai_ideal: nilaiKandidat.rataRataNilaiIdealKandidat,
+      total_nilai_normal: nilaiKandidat.totalNilaiNormalkandidat
+    }, {
+      where: {
+        id: kandidat10.id
+      }
+    });
 
     // update status sesi rekrutmen
     await model.sesiRekrutmen.update({

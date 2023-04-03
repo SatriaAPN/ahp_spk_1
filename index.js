@@ -12,7 +12,7 @@ const dropdown = [
   },
   {
     id: 2,
-    keterangan: 'Mendekati mutlak dari',
+    keterangan: 'Mendekati mutlak sangat penting dari',
     value: 8
   },
   {
@@ -52,42 +52,42 @@ const dropdown = [
   },
   {
     id: 10,
-    keterangan: 'Mendekati sedikit tidak lebih penting dari',
+    keterangan: 'Mendekati sedikit kurang penting dari',
     value: 1/2
   },
   {
     id: 11,
-    keterangan: 'Sedikit lebih tidak penting dari',
+    keterangan: 'Sedikit kurang penting dari',
     value: 1/3
   },
   {
     id: 12,
-    keterangan: 'Mendekati lebih tidak penting dari',
+    keterangan: 'Mendekati kurang penting dari',
     value: 1/4
   },
   {
     id: 13,
-    keterangan: 'Lebih tidak penting dari',
+    keterangan: 'Kurang penting dari',
     value: 1/5
   },
   {
     id: 14,
-    keterangan: 'Mendekati sangat tidak penting dari',
+    keterangan: 'Mendekati mutlak kurang penting dari',
     value: 1/6
   },
   {
     id: 15,
-    keterangan: 'Sangat tidak penting dari',
+    keterangan: 'Mutlak kurang penting dari',
     value: 1/7
   },
   {
     id: 16,
-    keterangan: 'Mendekati mutlak tidak penting dari',
+    keterangan: 'Mendekati mutlak sangat kurang penting dari',
     value: 1/8
   },
   {
     id: 17,
-    keterangan: 'Mutlak sangat tidak penting dari',
+    keterangan: 'Mutlak sangat kurang penting dari',
     value: 1/9
   }
 ];

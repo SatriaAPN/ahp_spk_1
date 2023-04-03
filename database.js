@@ -9,15 +9,15 @@ const databaseUrl = process.env.DATABASE_URL || `postgres://${user}:${password}@
 const sequelize = new Sequelize(databaseUrl,
 {
   logging: false,
-  // dialectOptions: {
-  //   ssl: {
-  //     require: true,
-  //     rejectUnauthorized: false
-  //   }
-  // }
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  }
 }) // Example for postgres
 
-const akun = sequelize.define('akun', {
+const akun = sequelize.define('akuns', {
   // Model attributes are defined here
   nama: {
     type: DataTypes.STRING,

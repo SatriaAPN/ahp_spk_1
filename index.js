@@ -2300,7 +2300,7 @@ app.get('/pusat-kontrol-sesi/:id', async (req, res, next) => {
               end as "rank" ,
               a.nama as "namaSeniorProgrammerPenilai"
             from kandidat k
-            left join akun a 
+            left join akuns a 
               on a.id = k.id_senior_programmer
             where k.id_sesi_rekrutmen = :idSesi
               and k.total_nilai_normal is not null
@@ -2316,7 +2316,7 @@ app.get('/pusat-kontrol-sesi/:id', async (req, res, next) => {
               null as "rank" ,
               a.nama as "namaSeniorProgrammerPenilai"
             from kandidat k
-            left join akun a 
+            left join akuns a 
               on a.id = k.id_senior_programmer
             where k.id_sesi_rekrutmen = :idSesi
               and k.total_nilai_normal is null

@@ -503,6 +503,7 @@ const periksaApakahSemuaKriteriaTidakMemilikiError = async () => {
   }
 }
 
+// this comment
 module.exports = {
   sequelize,
   model: {
